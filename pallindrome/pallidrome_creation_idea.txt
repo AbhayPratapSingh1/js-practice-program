@@ -1,0 +1,9 @@
+length < 1 :
+  therefore the pallidrome
+length > 1 :
+  therefore we have to check
+
+  for this we can do a thing
+    1. Create a reverse string then equate both of them
+    2. Check for the first and last element is same or not
+    3. 
