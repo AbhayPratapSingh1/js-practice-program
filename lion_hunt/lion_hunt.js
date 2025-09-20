@@ -11,7 +11,7 @@ const sample6b = "L  ZL Z"   // 0
 const sample7 = ""          // -1
 const sample8 = "LZ  L Z"   // 0
 
-const sampleCase = sample5;
+const sampleCase = sample8;
 let shortestPath = -1
 let spaceBetween = -1;
 
@@ -30,7 +30,7 @@ for (let sampleIteratorIndex = 0; sampleIteratorIndex < sampleCase.length; sampl
     lastAnimal = sampleCase[sampleIteratorIndex];
     if ( secondLastAnimal !== "" && lastAnimal !== secondLastAnimal){
       spaceBetween = spaceBetween + 1;
-      shortestPath = spaceBetween
+      shortestPath = (shortestPath > spaceBetween || shortestPath === -1 )? spaceBetween : shortestPath
       spaceBetween = 0
     }
   }
