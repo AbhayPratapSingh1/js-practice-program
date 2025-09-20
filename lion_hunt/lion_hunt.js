@@ -9,7 +9,7 @@ const sample6 = "L  ZL Z"   // 0
 const sample7 = ""          // 0
 const sample8 = "LZ  L Z"   // 2
 
-const sampleCase = sample2;
+const sampleCase = sample1b;
 let spaceBetween = -1;
 
 let lastAnimal = "";
@@ -24,8 +24,7 @@ if (sampleIteratorIndex < sampleCase.length && sampleCase[sampleIteratorIndex] !
 }
 sampleIteratorIndex += 1
 
-
-if (sampleIteratorIndex < sampleCase.length){
+for (; sampleIteratorIndex < sampleCase.length; sampleIteratorIndex++){
   if (sampleCase[sampleIteratorIndex]===" "){
     spaceBetween = spaceBetween + 1
   }
@@ -37,63 +36,6 @@ if (sampleIteratorIndex < sampleCase.length){
     }
   }
 }
-sampleIteratorIndex += 1
-
-if (sampleIteratorIndex < sampleCase.length){
-  if (sampleCase[sampleIteratorIndex]===" "){
-    spaceBetween = spaceBetween + 1
-  }
-  else{
-    secondLastAnimal = lastAnimal
-    lastAnimal = sampleCase[sampleIteratorIndex];
-    if ( secondLastAnimal !== "" && lastAnimal !== secondLastAnimal){
-      spaceBetween = spaceBetween + 1;
-    }
-  }
-}
-sampleIteratorIndex += 1
-
-if (sampleIteratorIndex < sampleCase.length){
-  if (sampleCase[sampleIteratorIndex]===" "){
-    spaceBetween = spaceBetween + 1
-  }
-  else{
-    secondLastAnimal = lastAnimal
-    lastAnimal = sampleCase[sampleIteratorIndex];
-    if ( secondLastAnimal !== "" && lastAnimal !== secondLastAnimal){
-      spaceBetween = spaceBetween + 1;
-    }
-  }
-}
-sampleIteratorIndex += 1
-
-if (sampleIteratorIndex < sampleCase.length){
-  if (sampleCase[sampleIteratorIndex]===" "){
-    spaceBetween = spaceBetween + 1
-  }
-  else{
-    secondLastAnimal = lastAnimal
-    lastAnimal = sampleCase[sampleIteratorIndex];
-    if ( secondLastAnimal !== "" && lastAnimal !== secondLastAnimal){
-      spaceBetween = spaceBetween + 1;
-    }
-  }
-}
-sampleIteratorIndex += 1
-
-if (sampleIteratorIndex < sampleCase.length){
-  if (sampleCase[sampleIteratorIndex]===" "){
-    spaceBetween = spaceBetween + 1
-  }
-  else{
-    secondLastAnimal = lastAnimal
-    lastAnimal = sampleCase[sampleIteratorIndex];
-    if ( secondLastAnimal !== "" && lastAnimal !== secondLastAnimal){
-      spaceBetween = spaceBetween + 1;
-    }
-  }
-}
-sampleIteratorIndex += 1
 
 
 
