@@ -7,7 +7,7 @@ const sampleCase6 = " a a "
 const sampleCase7 = "racecar"
 const sampleCase8 = ""
 
-const sampleCase = sampleCase1
+const sampleCase = sampleCase8
 
 let isPalindrome = true
 let checkIsSame = true
@@ -19,6 +19,38 @@ if (isPalindrome && sampleIteratingIndex < sampleCase.length){
   const sampleNegativeIndex = sampleCase.length - sampleIteratingIndex - 1
   checkIsSame = sampleCase[sampleIteratingIndex] === sampleCase[sampleNegativeIndex]
   isPalindrome = checkIsSame? isPalindrome : false
+  sampleIteratingIndex += 1
+}
+if (isPalindrome && sampleIteratingIndex < sampleCase.length){
+  const sampleNegativeIndex = sampleCase.length - sampleIteratingIndex - 1
+  checkIsSame = sampleCase[sampleIteratingIndex] === sampleCase[sampleNegativeIndex]
+  isPalindrome = checkIsSame? isPalindrome : false
+  sampleIteratingIndex += 1
+}
+if (isPalindrome && sampleIteratingIndex < sampleCase.length){
+  const sampleNegativeIndex = sampleCase.length - sampleIteratingIndex - 1
+  checkIsSame = sampleCase[sampleIteratingIndex] === sampleCase[sampleNegativeIndex]
+  isPalindrome = checkIsSame? isPalindrome : false
+  sampleIteratingIndex += 1
+}
+
+if (isPalindrome && sampleIteratingIndex < sampleCase.length){
+  const sampleNegativeIndex = sampleCase.length - sampleIteratingIndex - 1
+  checkIsSame = sampleCase[sampleIteratingIndex] === sampleCase[sampleNegativeIndex]
+  isPalindrome = checkIsSame? isPalindrome : false
+  sampleIteratingIndex += 1
+}
+if (isPalindrome && sampleIteratingIndex < sampleCase.length){
+  const sampleNegativeIndex = sampleCase.length - sampleIteratingIndex - 1
+  checkIsSame = sampleCase[sampleIteratingIndex] === sampleCase[sampleNegativeIndex]
+  isPalindrome = checkIsSame? isPalindrome : false
+  sampleIteratingIndex += 1
+}
+if (isPalindrome && sampleIteratingIndex < sampleCase.length){
+  const sampleNegativeIndex = sampleCase.length - sampleIteratingIndex - 1
+  checkIsSame = sampleCase[sampleIteratingIndex] === sampleCase[sampleNegativeIndex]
+  isPalindrome = checkIsSame? isPalindrome : false
+  sampleIteratingIndex += 1
 }
 
 
