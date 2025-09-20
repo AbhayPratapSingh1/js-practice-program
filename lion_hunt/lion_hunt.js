@@ -8,17 +8,23 @@ const sample7 = ""          // 0
 const sample8 = "LZ  L Z"   // 2
 
 const sampleCase = sample1;
-const spaceBetween = -1;
+let spaceBetween = -1;
 
 let firstAnimal = "";
-const sampleIteratorIndex = 0;
+let sampleIteratorIndex = 0;
+
 
 if (sampleCase[sampleIteratorIndex] !== " "){
   firstAnimal = sampleCase[sampleIteratorIndex];
 }
+sampleIteratorIndex += 1
 
 
-console.log("Animal :", firstAnimal)
+if (sampleCase[sampleIteratorIndex] !== " " && sampleCase[sampleIteratorIndex] !== firstAnimal){
+  spaceBetween = spaceBetween + 1;
+}
+
+
 
 const output = spaceBetween;
 console.log(output);
