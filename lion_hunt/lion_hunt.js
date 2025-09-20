@@ -6,19 +6,20 @@ const sample2c = "  Z L"       // 1
 const sample3 = "L     Z"   // 5
 const sample4 = "L     L"   // -1
 const sample5 = "Z   Z   Z" // -1
-const sample6 = "L  ZL Z"   // 0
+const sample6 = "L  Z    L Z"   // 0
+const sample6b = "L  ZL Z"   // 0
 const sample7 = ""          // -1
 const sample8 = "LZ  L Z"   // 0
 
-const sampleCase = sample2c;
+const sampleCase = sample5;
+let shortestPath = -1
 let spaceBetween = -1;
 
 let lastAnimal = "";
 let secondLastAnimal = "";
 
-let sampleIteratorIndex = 0;
 
-for (; sampleIteratorIndex < sampleCase.length; sampleIteratorIndex++){
+for (let sampleIteratorIndex = 0; sampleIteratorIndex < sampleCase.length; sampleIteratorIndex++){
   if (sampleCase[sampleIteratorIndex] === " " ){
     if (lastAnimal !== ""){
       spaceBetween = spaceBetween + 1
@@ -29,9 +30,13 @@ for (; sampleIteratorIndex < sampleCase.length; sampleIteratorIndex++){
     lastAnimal = sampleCase[sampleIteratorIndex];
     if ( secondLastAnimal !== "" && lastAnimal !== secondLastAnimal){
       spaceBetween = spaceBetween + 1;
+      shortestPath = spaceBetween
+      spaceBetween = 0
     }
   }
 }
 
-const output = spaceBetween;
+
+
+const output = shortestPath;
 console.log(output);
