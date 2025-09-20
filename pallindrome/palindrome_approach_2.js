@@ -8,17 +8,18 @@ const sampleCase7 = "racecar"
 const sampleCase8 = ""
 
 const sampleCase = sampleCase8
+const sampleLength = sampleCase.length
 
 let isPalindrome = true
 let checkIsSame = true
 let sampleIteratingIndex = 0;
 
 
-while(isPalindrome && sampleIteratingIndex < sampleCase.length){
-  const sampleNegativeIndex = sampleCase.length - sampleIteratingIndex - 1
+
+for( let sampleIteratingIndex = 0; isPalindrome && (sampleIteratingIndex < sampleLength); sampleIteratingIndex++){
+  const sampleNegativeIndex = sampleLength - sampleIteratingIndex - 1
   checkIsSame = sampleCase[sampleIteratingIndex] === sampleCase[sampleNegativeIndex]
   isPalindrome = checkIsSame? isPalindrome : false
-  sampleIteratingIndex += 1
 }
 
 
