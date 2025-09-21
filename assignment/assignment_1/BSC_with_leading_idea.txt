@@ -1,0 +1,6 @@
+split the problem in different parts:
+1. Convert no into the binary string (with 0 rep as 2 and 1 rep as 3)
+2. Convert substring into a no
+3. Convert substring no into binary (with 0 rep as 2 and 1 rep as 3)
+4. Adding zeros (2) in the main no as leading zeros according to the lenght of substring
+5. compare the main no and substring no which is converted into the binary.
