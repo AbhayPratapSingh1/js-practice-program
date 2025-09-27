@@ -1,5 +1,42 @@
+function isVowel(character) {
+  switch(character){
+    case "a":
+      return true;
+      
+    case "e":
+      return true;
+
+    case "i":
+      return true;
+
+    case "o":
+      return true;
+
+    case "u":
+      return true;
+  }
+  return false;
+}
+
+function isShortestDistance(firstIndex, lastIndex, shortestDistance){
+  if (firstIndex === -1) {
+    return false;
+  }
+  return shortestDistance === -1 || shortestDistance > (lastIndex - firstIndex)
+}
+
 function shortestDistance(word){
-  return 3;
+  let shortestDistance = -1;
+  let lastVowelIndex = -1;
+
+  for (let index = 0; index < word.length; index++){
+    if (isVowel(word[index])){
+      shortestDistance = isShortestDistance(lastVowelIndex, index, shortestDistance) ? index - lastVowelIndex : shortestDistance;
+      lastVowelIndex = index;
+    }
+  }
+  
+  return shortestDistance;
 }
 
 function testShortestDistance(word, expected){
