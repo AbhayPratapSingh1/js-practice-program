@@ -13,7 +13,7 @@ Write a program that takes a single word (string) as input and finds the **short
 
 | Input     | Output | Explanation                                               |
 | --------- | ------ | --------------------------------------------------------- |
-| hello     | 2      | Vowels: e at index 1, o at index 4 → distance = 4 − 1 = 3 |
+| hello     | 3      | Vowels: e at index 1, o at index 4 → distance = 4 − 1 = 3 |
 | apple     | 4      | Vowels: a at index 0, e at index 4 → distance = 4         |
 | strength  | -1     | Only one vowel (`e`) → output -1                          |
 | beautiful | 1      | Vowels: e at 1, a at 2 → distance = 1                     |
