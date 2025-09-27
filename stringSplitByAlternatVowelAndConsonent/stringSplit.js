@@ -23,32 +23,44 @@ function isBothVowelAndConsonent(char, char2){
   return isVowel(char) !== isVowel(char2);
 }
 
-function addCommaBetweenWords(word){
+function removeFirstChar(word){
   let resultBuffer = "";
-  for (let index = 0; index < word.length; index++){
-    resultBuffer += "," + word[index];
+  for (let index = 1; index < word.length; word++){
+    resultBuffer += word[index];
   }
-  return resultBuffer;
+  return resultBuffer
 }
+
 
 function spltitWords(word) {
   
   let processingWord = word;
-  let resultWordBuffer = word[0];
+  let resultWordBuffer = "";
   let unused = word;
+  
+  while (unused !== ""){
+    processingWord = unused;
+    unused = ""
 
-  unused = "";
-  for (let wordIndex = 1; wordIndex < processingWord.length; wordIndex++){
-    const lastCharAdded = resultWordBuffer[resultWordBuffer.length - 1];
-    const charToAdd = isBothVowelAndConsonent(processingWord[wordIndex], lastCharAdded) ? processingWord[wordIndex] : "";
-    resultWordBuffer += charToAdd
+    let currentBuldingWord = processingWord[0];
+    
+    for (let wordIndex = 1; wordIndex < processingWord.length; wordIndex++){
 
-    const unUsedCharToAdd = charToAdd === "" ? processingWord[wordIndex] : "";
-    unused += unUsedCharToAdd;
+      const lastCharAdded = currentBuldingWord[currentBuldingWord.length - 1];
+      const charToAdd = isBothVowelAndConsonent(processingWord[wordIndex], lastCharAdded) ? processingWord[wordIndex] : "";
+      
+      currentBuldingWord += charToAdd;
+  
+      const unUsedCharToAdd = charToAdd === "" ? processingWord[wordIndex] : "";
+      unused += unUsedCharToAdd;
+    
+    }
+
+    resultWordBuffer += resultWordBuffer === "" ?  currentBuldingWord : "," + currentBuldingWord;
+
   }
 
-  const suffixOfResultBuffer = addCommaBetweenWords(unused);
-  return resultWordBuffer + suffixOfResultBuffer;
+  return resultWordBuffer;
 }
 
 function testSplittingWord(word, expected) {
@@ -74,7 +86,8 @@ function testAllCases() {
   testSplittingWord("hello", "helo,l");
   testSplittingWord("abyss", "ab,y,s,s");
   testSplittingWord("this", "tis,h");
-  
+  testSplittingWord("aaaeee","a,a,a,e,e,e")
+  testSplittingWord("aaabbb","ab,ab,ab")
 }
 
 testAllCases();
