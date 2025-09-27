@@ -1,3 +1,4 @@
+
 function isVowel(character) {
   switch(character){
     case "a":
@@ -22,6 +23,13 @@ function isBothVowelAndConsonent(char, char2){
   return isVowel(char) !== isVowel(char2);
 }
 
+function addCommaBetweenWords(word){
+  let resultBuffer = "";
+  for (let index = 0; index < word.length; index++){
+    resultBuffer += "," + word[index];
+  }
+  return resultBuffer;
+}
 
 function spltitWords(word) {
   
@@ -39,7 +47,8 @@ function spltitWords(word) {
     unused += unUsedCharToAdd;
   }
 
-  return resultWordBuffer
+  const suffixOfResultBuffer = addCommaBetweenWords(unused);
+  return resultWordBuffer + suffixOfResultBuffer;
 }
 
 function testSplittingWord(word, expected) {
@@ -47,23 +56,25 @@ function testSplittingWord(word, expected) {
 
   const icon = result === expected ? "✅" : "❌";
 
-  let message = icon + " [ Word : " + word + "]";
-  message += "\n Acutal : " + result + " | Expected : " + expected;
+  let message ="\t" + icon + " [ Word : " + word + "]";
+  message += "\n\t   Acutal : " + result + " | Expected : " + expected + "\n";
   console.log(message);
 }
 
 function testAllCases() {
+  console.log("")
   testSplittingWord("apepele", "apepele");
   testSplittingWord("apepelek", "apepelek");
   testSplittingWord("pepele", "pepele");
 
   testSplittingWord("appe", "ape,p");
-  // testSplittingWord("apple", "ape,p,l");
-  // testSplittingWord("apple", "ape,p,l");
-  // testSplittingWord("there", "tere,h");
-  // testSplittingWord("hello", "helo,l");
-  // testSplittingWord("abyss", "ab,y,s,s");
-  // testSplittingWord("this ", "tis,h");
+  testSplittingWord("apple", "ape,p,l");
+  testSplittingWord("apple", "ape,p,l");
+  testSplittingWord("there", "tere,h");
+  testSplittingWord("hello", "helo,l");
+  testSplittingWord("abyss", "ab,y,s,s");
+  testSplittingWord("this", "tis,h");
+  
 }
 
 testAllCases();
