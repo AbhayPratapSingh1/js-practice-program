@@ -1,4 +1,3 @@
-
 function mainFunction(entity1, entity2) {
   return entity1 + entity2;
 }
@@ -13,6 +12,18 @@ function mainFunction(entity1, entity2) {
 
 
 
+
+
+
+
+
+const R = 253;
+const G = 182;
+const B = 0;
+// for text
+const RGBCOLOR = "\u001b[38;2;" + R + ";" + G + ";" + B + "m";
+// console.log("color L: ", RGBCOLOR);
+
 // text
 const TXT_BLUE = 34;
 const TXT_GREEN = 32;
@@ -21,7 +32,7 @@ const TXT_RED = 31;
 const BG_GREEN = 42;
 const BG_CYAN = 46;
 
-const LAVENDER = "\u001b[38;5;147m";
+const LAVENDER = "\u001b[38;5;228m";
 const PINK = "\u001b[38;5;201m";
 
 
@@ -95,10 +106,12 @@ function addSpaces(value, width) {
 function setRow(entity1, entity2, expected, actual) {
   let message = "";
 
+
   let result = actual === expected ? "✅" : "❌";
   if (actual === "Actual" && expected === "Expected") {
     result = "  ";
   }
+
 
   message += "|" + result + "|";
 
