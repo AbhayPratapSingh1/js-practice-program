@@ -14,6 +14,7 @@ function maxFrequenctElemets(elements, frequencies) {
   return maxElements;
 }
 
+
 function mode(data) {
   const uniqueElements = [];
   const frequency = [];
@@ -44,6 +45,7 @@ function randomArray(numberOfTerms, st = 1, end = 100) {
   }
   return randomData;
 }
+
 
 const data = randomArray(20, 1, 6);
 console.log(data);

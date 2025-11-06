@@ -19,30 +19,21 @@ function sort(data) {
   return sortedData;
 }
 
-function mode(data) {
-  const sortedData = sort(data);
-  let maxFreqElement = [data[0]];
-  let maxFreq = 1;
-  let currElement = data[0];
-  let currFreq = 1;
-  for (let index = 1; index < sortedData.length; index++) {
-    if (sortedData[index] !== currElement) {
-      if (currFreq > maxFreq) {
-        maxFreq = currFreq;
-        maxFreqElement = [currElement];
-      } else if (currFreq === maxFreq) {
-        maxFreqElement.push(sortedData[index]);
-      }
-      currFreq = 1;
-      currElement = sortedData[index];
-    } else {
-      currFreq++;
-    }
+function recursiveOperation(data, operation) {
+  let modifingValue = data[0];
+  for (let index = 0; index < data.length; index++) {
+    const value = data[index];
+    modifingValue = operation(modifingValue, value);
   }
-
-  return maxFreqElement;
+  return modifingValue;
+}
+function add(val1, val2) {
+  return val1 + val2;
 }
 
+function mean(data) {
+  return recursiveOperation(data, add) / data.length;
+}
 
 function randomNumberBetween(first = 0, last = 1) {
   return first + (Math.floor(Math.random() * (last - first)));
@@ -57,5 +48,6 @@ function randomArray(numberOfTerms, st = 1, end = 100) {
 }
 
 const data = randomArray(20, 1, 6);
+console.log(data);
 
-console.log(mode(data).join(", "));
+console.log("mean :", mean(data));

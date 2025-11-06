@@ -1,3 +1,6 @@
+
+
+
 let numberOfTimes = 0;
 
 function sort2(data) {
