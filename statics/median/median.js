@@ -1,3 +1,5 @@
+
+
 function sort(data) {
   const sortedData = data.slice();
   for (let i = 0; i < data.length / 2; i++) {
@@ -19,30 +21,12 @@ function sort(data) {
   return sortedData;
 }
 
-function mode(data) {
+
+function median(data) {
   const sortedData = sort(data);
-  let maxFreqElement = [data[0]];
-  let maxFreq = 1;
-  let currElement = data[0];
-  let currFreq = 1;
-  for (let index = 1; index < sortedData.length; index++) {
-    if (sortedData[index] !== currElement) {
-      if (currFreq > maxFreq) {
-        maxFreq = currFreq;
-        maxFreqElement = [currElement];
-      } else if (currFreq === maxFreq) {
-        maxFreqElement.push(sortedData[index]);
-      }
-      currFreq = 1;
-      currElement = sortedData[index];
-    } else {
-      currFreq++;
-    }
-  }
-
-  return maxFreqElement;
+  const middleIndex = Math.floor(data.length / 2)
+  return sortedData[middleIndex];
 }
-
 
 function randomNumberBetween(first = 0, last = 1) {
   return first + (Math.floor(Math.random() * (last - first)));
@@ -57,5 +41,6 @@ function randomArray(numberOfTerms, st = 1, end = 100) {
 }
 
 const data = randomArray(20, 1, 6);
+console.log(data);
 
-console.log(mode(data).join(", "));
+console.log("median :", median(data));
