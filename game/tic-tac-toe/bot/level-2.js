@@ -19,13 +19,13 @@ function delay() {
 }
 
 
-function genGridOf(cols, rows) {
+function genGridOf(cols, rows, item = " ") {
   const grid = [];
 
   for (let row = 0; row < rows; row++) {
     const eachRow = []
     for (let col = 0; col < cols; col++) {
-      eachRow.push(" ");
+      eachRow.push(item);
     }
     grid.push(eachRow)
   }
@@ -229,6 +229,7 @@ function generateOutPut(grid, message) {
   return finalPrintablGrid(finalGridArray) + printingMessage;
 }
 
+
 function checkWin(grid) {
   for (let row = 0; row < 3; row++) {
     if (grid[row][0] === grid[row][1] && grid[row][1] === grid[row][2] && grid[row][0] !== " ") {
@@ -281,53 +282,193 @@ function checkForCenter(grid, icon, offset) {
   return point + point_diag1 + point_diag2;
 }
 
-function cordinatePoint(grid, icon, row, col, offset) {
-  if (grid[row][col] !== " ") {
-    return -1;
-  }
-  let point = 0
-  if (row % 2 === 0 && col % 2 === 0) {
-    point += checkForDiagnol(grid, icon, row, col, offset)
-  }
-  if ((row === 1 && col === 1)) {
-    point += checkForCenter(grid, icon, row, col, offset);
-  }
-  let point_row = 0;
-  let point_col = 0;
+const isCorner = function (y, x) {
+  return ((x + y) % 2) === 0;
+}
+const isCenter = function (y, x) {
+  return x === y && x === 1
+}
 
-  for (let index = 0; index < 3; index++) {
-    const rowCheck = grid[row][index];
-    const colCheck = grid[index][col];
-    if (rowCheck === icon) {
-      point_row += offset;
+const checkCol = function (grid, icon, row, col, offset) {
+  let points = 0;
+  let index = 0;
+  while (index < 3) {
+    const currentItem = grid[row][index];
+    if (currentItem === icon && index !== col) {
+      points += offset;
+    } else if (currentItem !== " ") {
+      points = -1;
+      index = 3;
     }
+    index++
+  }
+  return points === offset * 2 ? 10 * offset : points;
+}
 
-    if (colCheck === icon) {
-      point_col += offset;
+const checkRow = function (grid, icon, row, col, offset) {
+  let points = 0;
+  let index = 0;
+
+  index = 0;
+  while (index < 3) {
+    const currentItem = grid[index][col];
+    if (currentItem === icon && index !== row) {
+      points += offset;
+    } else if (currentItem !== " ") {
+      points = -1;
+      index = 3;
+    }
+    index++
+  }
+  return points === offset * 2 ? 10 * offset : points;
+}
+
+const checkDiag1 = function (grid, icon, row, col, offset) {
+  let points = 0;
+  let index = 0;
+
+  index = 0;
+
+  while (index < 3) {
+    const currentItem = grid[index][index];
+    if (currentItem === icon && index !== row) {
+      points += offset;
+    } else if (currentItem !== " ") {
+      points = -1;
+      index = 3;
+    }
+    index++
+  }
+  return points === offset * 2 ? 10 * offset : points;
+}
+const checkDiag2 = function (grid, icon, row, col, offset) {
+  let points = 0;
+  let index = 0;
+
+  index = 0;
+
+  while (index < 3) {
+    const currentItem = grid[index][2 - index];
+    if (currentItem === icon && index !== row) {
+      points += offset;
+    } else if (currentItem !== " ") {
+      points = -1;
+      index = 3;
+    }
+    index++
+  }
+  return points === offset * 2 ? 10 * offset : points;
+}
+
+const cordinatePoint = function (grid, icon, row, col, offset) {
+  let points = 0;
+  if (isCenter(row, col)) {
+    points = checkDiag1(grid, icon, row, col, offset);
+    points += checkDiag2(grid, icon, row, col, offset);
+  }
+  if (isCorner(row, col)) {
+    if (row === col) {
+      points = checkDiag1(grid, icon, row, col, offset);
+    } else {
+      points = checkDiag2(grid, icon, row, col, offset)
     }
   }
 
-  if (point_col > offset) {
-    point += offset * 10;
+  points += checkRow(grid, icon, row, col, offset) + checkCol(grid, icon, row, col, offset);
+  return points;
+}
+
+// function cordinatePointPrev(grid, icon, row, col, offset) {
+//   if (grid[row][col] !== " ") {
+//     return -1;
+//   }
+//   let point = 0
+//   if (row % 2 === 0 && col % 2 === 0) {
+//     point += checkForDiagnol(grid, icon, row, col, offset)
+//   }
+//   if ((row === 1 && col === 1)) {
+//     point += checkForCenter(grid, icon, row, col, offset);
+//   }
+//   let point_row = 0;
+//   let point_col = 0;
+
+//   for (let index = 0; index < 3; index++) {
+//     const rowCheck = grid[row][index];
+//     const colCheck = grid[index][col];
+//     if (rowCheck === icon) {
+//       point_row += offset;
+//     }
+
+//     if (colCheck === icon) {
+//       point_col += offset;
+//     }
+//   }
+
+//   if (point_col > offset) {
+//     point += offset * 10;
+//   }
+
+//   if (point_row > offset) {
+//     point += offset * 10;
+//   }
+
+//   return point + point_row + point_col;
+// }
+
+function mergeGrid(grid1, grid2) {
+  const mergedGrid = genGridOf(3, 3);
+
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 3; col++) {
+      mergedGrid[row][col] = grid1[row][col] + grid2[row][col];
+    }
+  }
+  return mergedGrid;
+}
+
+function sumOfEachPoint(scores) {
+  let sum = 0;
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 3; col++) {
+      sum += scores[row][col];
+    }
+  }
+  return sum;
+}
+
+function markNewGrid(grid, scores, icon, offset, count) {
+  const newPoints = genGridOf(3, 3, 0);
+
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 3; col++) {
+      if (grid[row][col] === " ") {
+        const newAssumedGrid = copyGrid(grid)
+        newAssumedGrid[row][col] = icon;
+
+        const newAssumedPoints = genPointGrid(newAssumedGrid, icon, offset / 10, count);
+        newPoints[row][col] = sumOfEachPoint(newAssumedPoints);
+      }
+    }
   }
 
-  if (point_row > offset) {
-    point += offset * 10;
-  }
 
-  return point + point_row + point_col;
+  return newPoints
 }
 
 
-
-function genPointGrid(grid, icon, offset) {
-  const posWinGrid = genGridOf(3, 3);
+function genPointGrid(grid, icon, offset, count = 3) {
+  const scores = genGridOf(3, 3);
   for (let row = 0; row < grid.length; row++) {
     for (let col = 0; col < grid.length; col++) {
-      posWinGrid[row][col] = cordinatePoint(grid, icon, row, col, offset);
+      scores[row][col] = cordinatePoint(grid, icon, row, col, offset);
     }
   }
-  return posWinGrid
+
+  if (count !== 1) {
+    const morePoints = markNewGrid(grid, scores, icon, offset / 2, count - 1)
+    return mergeGrid(morePoints, scores);
+  }
+  return scores
 }
 
 function getMaxPoint(score) {
@@ -340,11 +481,12 @@ function getMaxPoint(score) {
   return max;
 }
 
-function checkJustWin(grid, icon) {
-  const scores = genPointGrid(grid, icon, 5)
-  const maxScores = getMaxPoint(scores)
-  const winPos = getMaxPointLoc(scores)
-  if (maxScores > 10) {
+function checkJustWin(grid, icon, offset) {
+
+  const scores = genPointGrid(grid, icon, offset, 1);
+  const maxScores = getMaxPoint(scores);
+  const winPos = getMaxPointLoc(scores);
+  if (maxScores > offset) {
     return winPos;
   }
 
@@ -372,7 +514,7 @@ function showPlayerDetail(player1, player1Icon, player2, player2Icon) {
   console.log("player 2 : ", player2, player2Icon);
 }
 
-function gameRound(grid, roundNo, player1, player1Icon, player2, player2Icon) {
+function gameRound(grid, roundsLeft, player1, player1Icon, player2, player2Icon, turnOfComputer = true) {
   console.clear()
   showPlayerDetail(player1, player1Icon, player2, player2Icon);
 
@@ -383,32 +525,31 @@ function gameRound(grid, roundNo, player1, player1Icon, player2, player2Icon) {
     return;
   }
 
-  if (roundNo === 0) {
+  if (roundsLeft === 0) {
     console.log(generateOutPut(grid, "Hard Luck! Its a draw!"));
     return;
   }
 
-  console.log(generateOutPut(grid, `${roundNo % 2 === 0 ? player2 : player1} Turn!`));
+  console.log(generateOutPut(grid, `${turnOfComputer ? player2 : player1} Turn!`));
   let input = []
-  if (roundNo % 2 === 0) {
+
+  if (turnOfComputer) {
     delay();
-    const offset = 10;
-    const pointGrid = genPointGrid(grid, player1Icon, offset);
-    const justWinCord = checkJustWin(grid, player2Icon);
+    const offset = 1000;
+    const opponenetPointGrid = genPointGrid(grid, player1Icon, offset);
 
-    console.log(finalPrintablGrid(pointGrid, ""));
-    console.log(justWinCord);
+    const computerOffset = 1000;
+    const computerPointGrid = genPointGrid(grid, player2Icon, computerOffset);
+    const finalPoints = mergeGrid(computerPointGrid, opponenetPointGrid);
 
-    input = justWinCord[0] !== -1 ? justWinCord : input = getMaxPointLoc(pointGrid);
-    console.log(input);
-
+    input = getMaxPointLoc(finalPoints);
   } else {
     input = getNonUsedCordInput(grid);
   }
 
-  grid = markArray(grid, input, roundNo % 2 === 0 ? player2Icon : player1Icon);
+  grid = markArray(grid, input, turnOfComputer ? player2Icon : player1Icon);
 
-  gameRound(grid, roundNo - 1, player1, player1Icon, player2, player2Icon);
+  gameRound(grid, roundsLeft - 1, player1, player1Icon, player2, player2Icon, !turnOfComputer);
 }
 
 
@@ -435,18 +576,34 @@ function selectIcon() {
   return PLAYER_ICONS[takeIconInput("Please Select Your Character Icon : ")]
 }
 
+function random(starting = 0, ending = 1) {
+  console.log("here");
+
+  return Math.floor(Math.random() * (ending - starting)) + starting;
+}
+
+function randomValueFrom(array) {
+  console.log("here");
+
+  const index = random(0, array.length);
+  return array[index];
+}
+
 
 function playGame() {
   console.clear()
   const player1 = prompt("Enter player 1 :")
   const player1Icon = selectIcon()
-
   console.clear()
   const player2 = "Computer level - 1"
   const player2Icon = "$"
 
   let grid = genGridOf(3, 3)
-  gameRound(grid, 9, player1, player1Icon, player2, player2Icon)
+  const isComputerTurn = randomValueFrom([true, false]);
+
+  console.log("isCOmput", isComputerTurn);
+
+  gameRound(grid, 9, player1, player1Icon, player2, player2Icon, isComputerTurn)
 
   const playAgain = confirm("Wanted to Play Again?")
   if (playAgain) {
