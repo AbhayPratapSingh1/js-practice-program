@@ -1,4 +1,4 @@
-const lineN = (n, m = 1) => {
+const lineNofM = (n, m = 1) => {
   const array = [];
   for (let index = 0; index < n; index++) {
     array.push(m);
@@ -6,12 +6,20 @@ const lineN = (n, m = 1) => {
   return array;
 };
 
+const lineNwithInc = (n) => {
+  const array = [];
+  for (let index = 0; index < n; index++) {
+    array.push(index + 1);
+  }
+  return array;
+};
+
 const patternLine = (len, mainChar = "*", st = "*", end = "*") => {
-  return (st + mainChar.repeat(Math.max(0, len - 2)) + end).trim(len);
+  return (st + mainChar.repeat(Math.max(0, len - 2)) + end).slice(0, len);
 };
 
 const genHollowLine = (len, mainChar = " ", st = "*", end = "*") => {
-  return (st + mainChar.repeat(Math.max(0, len - 2)) + end).trim(len);
+  return (st + mainChar.repeat(Math.max(0, len - 2)) + end).slice(0, len);
 };
 
 const drawLines = (value, style) => {
@@ -19,10 +27,7 @@ const drawLines = (value, style) => {
 };
 
 const drawPattern = (type, style) => {
-  return type
-    .map((each, index) => drawLines(each, style[index]))
-    .flat()
-    .join("\n");
+  return type.map((each, index) => drawLines(each, style[index]));
 };
 
 const monolyth = (m) => {
@@ -39,19 +44,42 @@ const sandwitch = (m) => {
   return [[m[0]], m.slice(1, m.length - 1), [m.at(-1)]];
 };
 
+const drawPatterns = (m, n, linesType, patternType, style) => {
+  const template = patternType(linesType(m, n));
+  return drawPattern(template, style).flat().join("\n");
+};
+
 const rectangle = (m, n) => {
-  const patternLines = monolyth(lineN(m, n));
-  const patterStyle = [patternLine];
-  return drawPattern(patternLines, patterStyle);
+  return drawPatterns(m, n, lineNofM, monolyth, [patternLine]);
 };
 
-const hollowLine = (m, n) => {
-  const patternLines = sandwitch(lineN(m, n));
-  console.log(patternLines);
-
-  const patternStyle = [patternLine, genHollowLine, patternLine];
-  return drawPattern(patternLines, patternStyle);
+const hollowRectangle = (m, n) => {
+  return drawPatterns(m, n, lineNofM, sandwitch, [
+    patternLine,
+    genHollowLine,
+    patternLine,
+  ]);
 };
 
-console.log(rectangle(3, 10));
-console.log(hollowLine(10, 10));
+const triangle = (n, m) => {
+  return drawPatterns(n, m, lineNwithInc, monolyth, [patternLine]);
+};
+
+const hollowTriangle = (n, m) => {
+  return drawPatterns(n, m, lineNwithInc, sandwitch, [
+    patternLine,
+    genHollowLine,
+    patternLine,
+  ]);
+};
+console.log(rectangle(10, 10));
+console.log();
+
+console.log(hollowRectangle(10, 10));
+console.log();
+
+console.log(triangle(10, 10));
+console.log();
+
+console.log(hollowTriangle(10, 10));
+console.log();
