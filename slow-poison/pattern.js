@@ -10,17 +10,48 @@ const patternLine = (len, mainChar = "*", st = "*", end = "*") => {
   return (st + mainChar.repeat(Math.max(0, len - 2)) + end).trim(len);
 };
 
-const hollowLine = (len, mainChar = " ", st = "*", end = "*") => {
+const genHollowLine = (len, mainChar = " ", st = "*", end = "*") => {
   return (st + mainChar.repeat(Math.max(0, len - 2)) + end).trim(len);
 };
 
-const draw = (design) => {
-  return design.map((each) => hollowLine(each));
+const drawLines = (value, style) => {
+  return value.map((each) => style(each));
+};
+
+const drawPattern = (type, style) => {
+  return type
+    .map((each, index) => drawLines(each, style[index]))
+    .flat()
+    .join("\n");
+};
+
+const monolyth = (m) => {
+  return [m];
+};
+
+const sandwitch = (m) => {
+  if (m.length === 1) {
+    return [[m[0]], [], []];
+  }
+  if (m.length === 2) {
+    return [[m[0]], [], [m[1]]];
+  }
+  return [[m[0]], m.slice(1, m.length - 1), [m.at(-1)]];
 };
 
 const rectangle = (m, n) => {
-  return lineN(m, n)
-    .map((each) => patternLine(each, " *", " *", " *"))
-    .join("\n");
+  const patternLines = monolyth(lineN(m, n));
+  const patterStyle = [patternLine];
+  return drawPattern(patternLines, patterStyle);
 };
-console.log(rectangle(10, 10));
+
+const hollowLine = (m, n) => {
+  const patternLines = sandwitch(lineN(m, n));
+  console.log(patternLines);
+
+  const patternStyle = [patternLine, genHollowLine, patternLine];
+  return drawPattern(patternLines, patternStyle);
+};
+
+console.log(rectangle(3, 10));
+console.log(hollowLine(10, 10));
