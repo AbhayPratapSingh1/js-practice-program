@@ -14,11 +14,11 @@ const lineNwithInc = (n) => {
   return array;
 };
 
-const patternLine = (len, mainChar = "*", st = "*", end = "*") => {
-  return (st + mainChar.repeat(Math.max(0, len - 2)) + end).slice(0, len);
+const charLine = (len, mainChar = "*") => {
+  return mainChar.repeat(len);
 };
 
-const genHollowLine = (len, mainChar = " ", st = "*", end = "*") => {
+const hollowLine = (len, mainChar = " ", st = "*", end = "*") => {
   return (st + mainChar.repeat(Math.max(0, len - 2)) + end).slice(0, len);
 };
 
@@ -26,15 +26,11 @@ const drawLines = (value, style) => {
   return value.map((each) => style(each));
 };
 
-const drawPattern = (type, style) => {
-  return type.map((each, index) => drawLines(each, style[index]));
-};
-
 const monolyth = (m) => {
   return [m];
 };
 
-const sandwitch = (m) => {
+const sandwitchType = (m) => {
   if (m.length === 1) {
     return [[m[0]], [], []];
   }
@@ -44,34 +40,40 @@ const sandwitch = (m) => {
   return [[m[0]], m.slice(1, m.length - 1), [m.at(-1)]];
 };
 
+const drawPattern = (type, style) => {
+  return type.map((each, index) => drawLines(each, style[index]));
+};
+
 const drawPatterns = (m, n, linesType, patternType, style) => {
   const template = patternType(linesType(m, n));
+
   return drawPattern(template, style).flat().join("\n");
 };
 
 const rectangle = (m, n) => {
-  return drawPatterns(m, n, lineNofM, monolyth, [patternLine]);
+  return drawPatterns(m, n, lineNofM, monolyth, [charLine]);
 };
 
 const hollowRectangle = (m, n) => {
-  return drawPatterns(m, n, lineNofM, sandwitch, [
-    patternLine,
-    genHollowLine,
-    patternLine,
+  return drawPatterns(m, n, lineNofM, sandwitchType, [
+    charLine,
+    hollowLine,
+    charLine,
   ]);
 };
 
 const triangle = (n, m) => {
-  return drawPatterns(n, m, lineNwithInc, monolyth, [patternLine]);
+  return drawPatterns(n, m, lineNwithInc, monolyth, [charLine]);
 };
 
 const hollowTriangle = (n, m) => {
-  return drawPatterns(n, m, lineNwithInc, sandwitch, [
-    patternLine,
-    genHollowLine,
-    patternLine,
+  return drawPatterns(n, m, lineNwithInc, sandwitchType, [
+    charLine,
+    hollowLine,
+    charLine,
   ]);
 };
+
 console.log(rectangle(10, 10));
 console.log();
 
