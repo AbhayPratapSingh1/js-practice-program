@@ -225,17 +225,17 @@ console.log("30.", a30);
 // const a32 = q32
 // console.log("32.", a32);
 
-// // ### 33. Electricity Reading Validation
-// // Readings. Check if all readings are below 120.
-// const q33 = [[110, 115], [118], [109]];
-// const a33 = q33
-// console.log("33.", a33);
+// ### 33. Electricity Reading Validation
+// Readings. Check if all readings are below 120.
+const q33 = [[110, 115], [118], [109]];
+const a33 = q33
+console.log("33.", a33);
 
-// // ### 34. Jogging Lap Count
-// // Laps. Compute total laps.
-// const q34 = [[2, 3, 2], [1], [4]];
-// const a34 = q34
-// console.log("34.", a34);
+// ### 34. Jogging Lap Count
+// Laps. Compute total laps.
+const q34 = [[2, 3, 2], [1], [4]];
+const a34 = q34
+console.log("34.", a34);
 
 // // ### 35. Music Playlist Repeats
 // // Songs played. Count occurrences of `"track1"`.
