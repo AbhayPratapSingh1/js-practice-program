@@ -173,7 +173,7 @@ function finalPrintablGrid(grid, marginVert = 3, marginHor = 1) {
   return verticalMargin + printingGrid.join("\n") + verticalMargin
 }
 
-function markArray(grid, cord, sign) {
+function markGrid(grid, cord, sign) {
   const row = cord[0];
   const col = cord[1];
   const newArray = copyGrid(grid)
@@ -406,7 +406,7 @@ function gameRound(grid, roundNo, player1, player1Icon, player2, player2Icon) {
     input = getNonUsedCordInput(grid);
   }
 
-  grid = markArray(grid, input, roundNo % 2 === 0 ? player2Icon : player1Icon);
+  grid = markGrid(grid, input, roundNo % 2 === 0 ? player2Icon : player1Icon);
 
   gameRound(grid, roundNo - 1, player1, player1Icon, player2, player2Icon);
 }

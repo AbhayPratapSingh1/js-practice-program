@@ -57,6 +57,7 @@ function addGridOn(grid1, grid2, row = GAP_ROW, col = GAP_COL) {
   return resGrid
 }
 
+
 function gridMarker(grid, marks, length = 3) {
   const line1 = [];
   line1.push("".padStart(length));
@@ -173,7 +174,7 @@ function finalPrintablGrid(grid, marginVert = 3, marginHor = 1) {
   return verticalMargin + printingGrid.join("\n") + verticalMargin
 }
 
-function markArray(grid, cord, sign) {
+function markGrid(grid, cord, sign) {
   const row = cord[0];
   const col = cord[1];
   const newArray = copyGrid(grid)
@@ -184,6 +185,7 @@ function markArray(grid, cord, sign) {
 function isValidGridMarks(mark1, mark2) {
   return GRID_MARKER_LEFT.includes(mark1) && GRID_MARKER_TOP.includes(mark2)
 }
+
 
 function getCordInput(message = GRID_INPUT_MESSAGE) {
   const input = prompt(message).trim().split("")
@@ -547,7 +549,7 @@ function gameRound(grid, roundsLeft, player1, player1Icon, player2, player2Icon,
     input = getNonUsedCordInput(grid);
   }
 
-  grid = markArray(grid, input, turnOfComputer ? player2Icon : player1Icon);
+  grid = markGrid(grid, input, turnOfComputer ? player2Icon : player1Icon);
 
   gameRound(grid, roundsLeft - 1, player1, player1Icon, player2, player2Icon, !turnOfComputer);
 }
