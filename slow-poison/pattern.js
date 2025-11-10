@@ -41,7 +41,13 @@ const sandwitchType = (m) => {
 };
 
 const drawPattern = (type, style) => {
-  return type.map((each, index) => drawLines(each, style[index]));
+  const design = []
+  for (let index = 0; index < type.length; index++) {
+    const eachDesignLine = type[index]
+    design.push(drawLines(eachDesignLine, style[index]))
+  }
+
+  return design;
 };
 
 const drawPatterns = (m, n, linesType, patternType, style) => {
