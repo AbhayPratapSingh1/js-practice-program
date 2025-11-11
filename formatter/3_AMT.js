@@ -3,6 +3,7 @@ const ADD_SPACE_BOTH_SIDE = [
   "-",
   "+",
   "*",
+  "/",
   "%",
   "++",
   "--",
@@ -25,6 +26,7 @@ const ADD_SPACE_BOTH_SIDE = [
   "))",
   "((",
 ];
+
 const ADD_SPACE_RIGHT = [
   ",",
   ")",
@@ -39,7 +41,6 @@ const ADD_SPACE_RIGHT = [
 
 const ADD_SPACE_LEFT = ["{"];
 const NO_SPACE_CHARACTER = ["(", ")", "}", "."];
-// const SAME_FAMILY = [">=", "<=", "==", "!=", "))"];
 
 const NON_TERMINALING_CHARACTER = ["{", ",", ""];
 
@@ -131,7 +132,6 @@ const join = (elements) => {
     prev = current;
     elementsToJoin.push(modifiedElement);
   }
-  // const joiningElements = elements.map(addSpace);
   return elementsToJoin.join("");
 };
 
@@ -162,30 +162,66 @@ const pushAndClear = (collection, characters) => {
   }
 };
 
+const isComment = (elements) => ["//", "/*"].includes(elements);
+
+const extractComment = (line, index) => {
+  // console.log("index", index);
+
+  const match = line[index] === "/" ? "\n" : "*/";
+  let itrIndex = index + 1;
+  const lineElements = [line[index], line[index - 1]];
+  let prev = "";
+
+  while (
+    itrIndex < line.length &&
+    match !== (prev + line[itrIndex]).slice(2 - match.length, 2)
+  ) {
+    lineElements.push(line[itrIndex]);
+    prev = line[itrIndex];
+    itrIndex++;
+  }
+  lineElements.push(line[itrIndex]);
+
+  return [lineElements.join(""), itrIndex];
+};
+
 const splitExpression = (line) => {
   const lineElements = [];
   let currentElement = [];
+
   let index = 0;
+  let prevChar = "";
 
   while (index < line.length) {
-    const current = line[index];
-    if (current === "\n") {
+    const currentChar = line[index];
+    // console.log(prevChar + currentChar);
+
+    if (isComment(prevChar + currentChar)) {
+      lineElements.pop();
+      if (currentChar === "/-") {
+        lineElements.push("\n");
+      }
+      const commentAndIndex = extractComment(line, index);
+      index = commentAndIndex[1];
+      // lineElements.push()
+    } else if (currentChar === "\n") {
       pushAndClear(lineElements, currentElement);
       lineElements.push("\n");
-    } else if (isStringStart(current)) {
+    } else if (isStringStart(currentChar)) {
       pushAndClear(lineElements, currentElement);
       const strAndIndex = extractString(line, index);
       lineElements.push(strAndIndex[0]);
       index = strAndIndex[1];
     } else {
-      if (current === " " && currentElement.length !== 0) {
+      if (currentChar === " " && currentElement.length !== 0) {
         lineElements.push(currentElement.join(""));
         currentElement = [];
-      } else if (isOperator(current)) {
+      } else if (isOperator(currentChar)) {
         pushAndClear(lineElements, currentElement);
-        lineElements.push(current);
-      } else if (current !== " ") currentElement.push(current);
+        lineElements.push(currentChar);
+      } else if (currentChar !== " ") currentElement.push(currentChar);
     }
+    prevChar = currentChar;
     index++;
   }
 
@@ -194,46 +230,16 @@ const splitExpression = (line) => {
   return lineElements;
 };
 
-// const getNewIntend = (line, intend) => {
-//   let newIntend = intend;
-//   for (const each of line) {
-//     switch (each) {
-//       case "}":
-//         newIntend -= 1;
-//         break;
-//       case "};":
-//         newIntend -= 1;
-//         break;
-//       case "{;":
-//         newIntend += 1;
-//         break;
-//       case "{":
-//         newIntend += 1;
-//         break;
-//     }
-//   }
-
-//   return newIntend;
-// };
 const getNewIntend = (line, intend) => {
   let newIntend = intend;
   for (const each of line) {
-    switch (each) {
-      case "}":
-        newIntend -= 1;
-        break;
-      case "};":
-        newIntend -= 1;
-        break;
-      case "{;":
-        newIntend += 1;
-        break;
-      case "{":
-        newIntend += 1;
-        break;
+    if (["}", "};"].includes(each)) {
+      newIntend -= 1;
+    }
+    if (["{", "{;"].includes(each)) {
+      newIntend += 1;
     }
   }
-  // console.log(intend, newIntend);
 
   return newIntend;
 };
@@ -244,11 +250,8 @@ const expression = (line, intend) => {
   const spaceCorrectedLine = join(splittedLine);
   const newData = spaceCorrectedLine.split("\n");
   const da = [];
-  // console.log(splittedLine);
 
   for (let index = 0; index < newData.length; index++) {
-    // console.log(intend);
-
     const newIntend = getNewIntend(newData[index], intend);
     const finalLine = addSemicolen(newData[index]);
     let addingIntend = newIntend - intend < 0 ? newIntend : intend;
@@ -262,57 +265,55 @@ const expression = (line, intend) => {
       finalLine,
       addingIntend,
     );
-    console.log(formatedLine);
     intend = newIntend;
     da.push(formatedLine);
   }
 
   return [da.join("\n"), 0];
 };
-console.log();
 
-const line = [
-  "const pushAndClear = ( collection , characters)=>{",
-  "  if (characters.length      !==     0) {",
-  '    collection.push(characters. join   (""));',
-  "    characters.splice(0,    characters.length);",
-  "  }",
-  "};",
-  "",
-  "const splitExpression = (line) => {",
-  "  const lineElements = [];",
-  "  let currentElement = [];",
-  "  let index = 0;",
-  "",
-  "  while (index < line.length) {",
-  "    let delta = 1;",
-  "    const current = line[index];",
-  "",
-  "    if (isStringStart(current)) {",
-  "      pushAndClear(lineElements, currentElement);",
-  "",
-  "      const strAndIndex = extractString(line, index);",
-  "      lineElements.push(strAndIndex[0]);",
-  "",
-  "      delta = strAndIndex[1];",
-  "    } else {",
-  '      if (current === " " && currentElement.length !== 0) {',
-  '        lineElements.push(currentElement.join(""));',
-  "        currentElement = [];",
-  "      } else if (isOperator(current)) {",
-  "        pushAndClear(lineElements, currentElement);",
-  "        lineElements.push(current);",
-  '      } else if (current !== " ") currentElement.push(current);',
-  "    }",
-  "",
-  "    index += delta",
-  "  }",
-  '  lineElements   .    push   (    currentElement . join( "as    ;   + ++"  ))',
-  "",
-  "   return     lineElements;",
-  "}",
-  "",
-];
+// const line = [
+//   "const pushAndClear = ( collection , characters)=>{",
+//   "  if (characters.length      !==     0) {",
+//   '    collection.push(characters. join   (""));',
+//   "    characters.splice(0,    characters.length);",
+//   "  }",
+//   "};",
+//   "",
+//   "const splitExpression = (line) => {",
+//   "  const lineElements = [];",
+//   "  let currentElement = [];",
+//   "  let index = 0;",
+//   "",
+//   "  while (index < line.length) {",
+//   "    let delta = 1;",
+//   "    const current = line[index];",
+//   "",
+//   "    if (isStringStart(current)) {",
+//   "      pushAndClear(lineElements, currentElement);",
+//   "",
+//   "      const strAndIndex = extractString(line, index);",
+//   "      lineElements.push(strAndIndex[0]);",
+//   "",
+//   "      delta = strAndIndex[1];",
+//   "    } else {",
+//   '      if (current === " " && currentElement.length !== 0) {',
+//   '        lineElements.push(currentElement.join(""));',
+//   "        currentElement = [];",
+//   "      } else if (isOperator(current)) {",
+//   "        pushAndClear(lineElements, currentElement);",
+//   "        lineElements.push(current);",
+//   '      } else if (current !== " ") currentElement.push(current);',
+//   "    }",
+//   "",
+//   "    index += delta",
+//   "  }",
+//   '  lineElements   .    push   (    currentElement . join( "as    ;   + ++"  ))',
+//   "",
+//   "   return     lineElements;",
+//   "}",
+//   "",
+// ];
 
 const badlyFormattedTest = [
   "const      inconsistent_spacing = {",
@@ -326,61 +327,61 @@ const badlyFormattedTest = [
   "  },",
   "};",
   "",
-  "// --- Inconsistent Line Breaks and Semicolons ---",
-  "",
-  "if( inconsistent_spacing.key2 >   1000 )",
-  "{",
-  "  console.log ('It\\'s a big number' )",
-  "} else {",
-  "    // No semicolon here!",
-  '  const msg = "small number"',
-  "    console.log(msg) ;",
-  "}",
-  "",
-  "// --- Operator Spacing and Redundant Parentheses ---",
-  "",
-  "function calculateSomething(    x,    y    )   {",
-  "  let sum =    ( x  +y);",
-  "  let difference = (x -    y) ;",
-  "",
-  "  // Unnecessary complexity and inconsistent indentation",
-  "    for (let i = 0 ; i < 10 ; i += 1 ){",
-  "        if (i%2===0 )",
-  "      {",
-  "            // Extra empty line",
-  "            sum   += i;",
-  "        } else {",
-  "          difference   -=  i",
-  "        }",
-  "    }",
-  "",
-  "  return (sum    /    difference) ;",
-  "}; // Trailing semicolon on function declaration",
-  "",
-  "// --- Array/Object/Function Calls ---",
-  "",
-  "const array =   [ 1 ,  'two'  ,    3.0];",
-  "",
-  "const obj = { one:  1, two:2  , }; // Trailing comma and inconsistent spacing",
-  "",
-  "array.  forEach((item )  =>  {",
-  "  // Function call with weird spacing",
-  "  console. log ( item  ,  'end'  ) ;",
-  "});",
-  "",
-  "// --- String and Template Literal Abuse ---",
-  'const name =   "John Doe"    ;',
-  "const age =  25  ;",
-  "",
-  "const badString = `",
-  "  Hello, ${ name }!",
-  "    Your age is ${ (   age  +  5 )  * 2 }",
-  "  (This template is poorly indented and spaced).",
-  "`;",
-  "",
-  "// One final, truly horrific line",
-  "let finalResult=   (    calculateSomething(   array[0],    obj.one   )   + 10  ) ;",
-  "",
+  // "// --- Inconsistent Line Breaks and Semicolons ---",
+  // "",
+  // "if( inconsistent_spacing.key2 >   1000 )",
+  // "{",
+  // "  console.log ('It\\'s a big number' )",
+  // "} else {",
+  // "    // No semicolon here!",
+  // '  const msg = "small number"',
+  // "    console.log(msg) ;",
+  // "}",
+  // "",
+  // "// --- Operator Spacing and Redundant Parentheses ---",
+  // "",
+  // "function calculateSomething(    x,    y    )   {",
+  // "  let sum =    ( x  +y);",
+  // "  let difference = (x -    y) ;",
+  // "",
+  // "  // Unnecessary complexity and inconsistent indentation",
+  // "    for (let i = 0 ; i < 10 ; i += 1 ){",
+  // "        if (i%2===0 )",
+  // "      {",
+  // "            // Extra empty line",
+  // "            sum   += i;",
+  // "        } else {",
+  // "          difference   -=  i",
+  // "        }",
+  // "    }",
+  // "",
+  // "  return (sum    /    difference) ;",
+  // "}; // Trailing semicolon on function declaration",
+  // "",
+  // "// --- Array/Object/Function Calls ---",
+  // "",
+  // "const array =   [ 1 ,  'two'  ,    3.0];",
+  // "",
+  // "const obj = { one:  1, two:2  , }; // Trailing comma and inconsistent spacing",
+  // "",
+  // "array.  forEach((item )  =>  {",
+  // "  // Function call with weird spacing",
+  // "  console. log ( item  ,  'end'  ) ;",
+  // "});",
+  // "",
+  // "// --- String and Template Literal Abuse ---",
+  // 'const name =   "John Doe"    ;',
+  // "const age =  25  ;",
+  // "",
+  // "const badString = `",
+  // "  Hello, ${ name }!",
+  // "    Your age is ${ (   age  +  5 )  * 2 }",
+  // "  (This template is poorly indented and spaced).",
+  // "`;",
+  // "",
+  // "// One final, truly horrific line",
+  // "let finalResult=   (    calculateSomething(   array[0],    obj.one   )   + 10  ) ;",
+  // "",
 ];
 
 const input = badlyFormattedTest.join("\n");
@@ -395,5 +396,19 @@ intend = lineIntend[1];
 lines.push(lineIntend[0]);
 // console.log(lines.at(-1));
 // }
-
 console.log();
+console.log(lines.at(-1));
+console.log();
+
+const reslt = `const inconsistent_spacing = {
+  // A comment with an unnecessary trailing space
+  key1: "value 1", /* This is a multi-line comment that is badly
+    formatted and does not align. */
+  key2: 2.5e3, // Extra space before this comment
+  key3: function (a, b = "default") {
+    let result = (a + b) * 2;
+    return result;
+  },
+};`;
+
+console.log(reslt);
