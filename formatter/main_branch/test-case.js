@@ -1,4 +1,10 @@
-import { AMT, cutString, formatCharacter } from "./AMT.js";
+import {
+  AMT,
+  cutComment,
+  cutString,
+  formatCharacter,
+  isComment,
+} from "./AMT.js";
 import { testCase } from "./__testing-template.js";
 
 const underline = (text, gap = 0) => {
@@ -39,6 +45,7 @@ const test_isknownCharacter = () => {
   }];
   testCases.map((each) => testCase(each));
 };
+
 const test_cutString = () => {
   console.log();
   const description = "Testing the cut the string from given index";
@@ -49,33 +56,103 @@ const test_cutString = () => {
       description: 'Normal string with the ""',
       input: [`d "this is the string"`, 2],
       fn: cutString,
-      expected: { index: 22, cuttedString: `"this is the string"` },
+      expected: { index: 21, cuttedString: `"this is the string"` },
     },
     {
       description: "Normal string with the ''",
       input: [`d 'this is the string'`, 2],
       fn: cutString,
-      expected: { index: 22, cuttedString: `'this is the string'` },
+      expected: { index: 21, cuttedString: `'this is the string'` },
     },
     {
       description: "Normal string with the ``",
       input: ["d `this is the string`", 2],
       fn: cutString,
-      expected: { index: 22, cuttedString: "`this is the string`" },
+      expected: { index: 21, cuttedString: "`this is the string`" },
     },
     {
       description: "string with the `` and \`",
       input: ["d `this is \`the string`", 2],
       fn: cutString,
-      expected: { index: 22, cuttedString: "`this is the 'string`" },
+      expected: { index: 21, cuttedString: "`this is the 'string`" },
     },
   ];
   testCases.map((each) => testCase(each));
 };
+
+const test_isComment = () => {
+  console.log();
+  const description = "Testing is comment";
+  console.log(`${underline(description, 1)}\n`);
+
+  const testCases = [
+    {
+      description: "Comment //",
+      input: [`//`],
+      fn: isComment,
+      expected: true,
+    },
+    {
+      description: "Comment /*",
+      input: [`/*`],
+      fn: isComment,
+      expected: true,
+    },
+    {
+      description: "not Comment */",
+      input: [`*/`],
+      fn: isComment,
+      expected: false,
+    },
+    {
+      description: "not Comment \\n",
+      input: [`\n`],
+      fn: isComment,
+      expected: false,
+    },
+  ];
+  testCases.map((each) => testCase(each));
+};
+const test_cutComment = () => {
+  console.log();
+  const description = "Testing cutComment";
+  console.log(`${underline(description, 1)}\n`);
+
+  const testCases = [
+    {
+      description: "Comment //",
+      input: [`  // this is the comment\nasdf`, 2],
+      fn: cutComment,
+      expected: { index: 24, cuttedString: "// this is the comment\n" },
+    },
+    {
+      description: "Comment /*",
+      input: [`/* this is new Comment */asf`, 0],
+      fn: cutComment,
+      expected: { index: 24, cuttedString: "/* this is new Comment */" },
+    },
+    {
+      description: "Comment /*/",
+      input: [`/*/ this is new Comment */asf`, 0],
+      fn: cutComment,
+      expected: { index: 25, cuttedString: "/*/ this is new Comment */" },
+    },
+    {
+      description: "Comment /**/",
+      input: [`/**/ this is new Comment */asf`, 0],
+      fn: cutComment,
+      expected: { index: 3, cuttedString: "/**/" },
+    },
+  ];
+  testCases.map((each) => testCase(each));
+};
+
 console.log();
 
 test_isknownCharacter();
 test_cutString();
+test_isComment();
+test_cutComment();
 
 const finalBossInput = [
   "const      inconsistent_spacing = {",

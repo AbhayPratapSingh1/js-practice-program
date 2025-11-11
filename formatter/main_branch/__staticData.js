@@ -103,3 +103,10 @@ export const SPACES = [
 
 // it is a copy of known space as it will keep happen for each characters
 export const KNOWN_CHARS = SPACES.map((each) => [...each.values]).flat();
+
+// export const COMMENTS_PAIR = [["//", "\n"], ["/*", "*/"]];
+
+export const COMMENTS_PAIR = {
+  "//": "\n",
+  "/*": "*/",
+};
