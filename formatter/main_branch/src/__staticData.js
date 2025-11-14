@@ -1,53 +1,15 @@
-// const ADD_SPACE_BOTH_SIDE = [
-//   "=",
-//   "-",
-//   "+",
-//   "*",
-//   "%",
-//   "++",
-//   "--",
-//   ">",
-//   "!",
-//   "<",
-//   "+=",
-//   "-=",
-//   "*=",
-//   "/=",
-//   "%=",
-//   "<=",
-//   ">=",
-//   "=>",
-//   "[]",
-//   "===",
-//   "==",
-
-//   "!=",
-//   "!==",
-//   "))",
-//   "((",
-// ];
-// const ADD_SPACE_RIGHT = [
-//   ",",
-//   ")",
-//   "))",
-//   "return",
-//   "if",
-//   "else",
-//   "while",
-//   "for",
-//   ";",
-// ];
-// const ADD_SPACE_LEFT = ["{"];
-// const NO_SPACE_CHARACTER = ["(", ")", "}", "."];
-// const NON_TERMINALING_CHARACTER = ["{", ",", ""];
-
 export const SPACES = [
   {
     // both
     format: (characters) => ` ${characters} `,
     values: [
       "=",
+      "&",
+      "&&",
+      "||",
+      "|",
       "-",
+      ":",
       "+",
       "*",
       "%",
@@ -70,14 +32,13 @@ export const SPACES = [
 
       "!=",
       "!==",
-      "))",
-      "((",
+      "{",
     ],
   },
   {
     // left
     format: (characters) => ` ${characters}`,
-    values: ["{"],
+    values: [],
   },
   {
     // right
@@ -92,12 +53,15 @@ export const SPACES = [
       "while",
       "for",
       ";",
+      "function",
+      "const",
+      "let",
     ],
   },
   {
     // no
     format: (characters) => characters,
-    values: ["(", ")", "}", "."],
+    values: ["(", ")", "}", ".", "\n", "))", "(("],
   },
 ];
 

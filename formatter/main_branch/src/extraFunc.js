@@ -1,23 +1,18 @@
 import { dbg } from "./__debugger-helper.js";
 import { COMMENTS_PAIR, KNOWN_CHARS, SPACES } from "./__staticData.js";
-
 export const isKnownCharacter = (element) => KNOWN_CHARS.includes(element);
-
-export const isComment = (element) => {
-  return Object.keys(COMMENTS_PAIR).includes(element);
-};
-
+// SPACES;
 export const formatCharacter = (element) => {
   const index = SPACES.findIndex((each) => each.values.includes(element));
   return index === -1 ? element : SPACES[index].format(element);
 };
 
-const cutLineStart = (line, finalSize) => {
+const cropLineStart = (line, finalSize) => {
   return line.slice(line.length - finalSize, line.length);
 };
 
-// should i merge both of them?
-export const cutString = (line, curIndex) => {
+// should i merge all of them?
+export const sliceString = (line, curIndex) => {
   const stringStartingIcon = line[curIndex];
   let itrIndex = curIndex + 1;
 
@@ -26,10 +21,10 @@ export const cutString = (line, curIndex) => {
   }
 
   const strLine = line.slice(curIndex, itrIndex + 1);
-  return { index: itrIndex, cuttedString: strLine };
+  return { index: itrIndex, slicedString: strLine };
 };
 
-export const cutComment = (line, curIndex) => {
+export const sliceComment = (line, curIndex) => {
   const endChar = COMMENTS_PAIR[line.slice(curIndex, curIndex + 2)];
   const matSize = endChar.length;
 
@@ -38,13 +33,22 @@ export const cutComment = (line, curIndex) => {
 
   while (itr < line.length && checkingChar !== endChar) {
     itr++;
-    checkingChar = cutLineStart(line.slice(itr - 1, itr + 1), matSize);
+    checkingChar = cropLineStart(line.slice(itr - 1, itr + 1), matSize);
   }
 
   const strLine = line.slice(curIndex, itr + 1);
-  return { index: itr, cuttedString: strLine };
+  return { index: itr, slicedString: strLine };
 };
 
-export const AMT = (code) => {
-  return code;
+export const sliceOperator = (line, curIndex) => {
+  let itr = curIndex;
+  let checkingChar = line[curIndex];
+
+  while (itr < line.length && isKnownCharacter(checkingChar)) {
+    itr++;
+    checkingChar = line[itr];
+  }
+
+  const operator = line.slice(curIndex, itr + 1);
+  return { index: itr - 1, slicedOperator: operator };
 };

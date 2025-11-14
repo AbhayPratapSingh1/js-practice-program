@@ -1,0 +1,72 @@
+
+Deno.test("Normal string with the """,()=>{
+  const actual = cutString(["d "this is the string"", 2]);
+  assertEquals(actual, {index : 21, cuttedString : ""this is the string""})
+  })
+  
+
+Deno.test("Normal string with the ''",()=>{
+  const actual = cutString(["d 'this is the string'", 2]);
+  assertEquals(actual, {index : 21, cuttedString : "'this is the string'"})
+  })
+  
+
+Deno.test("Normal string with the ``",()=>{
+  const actual = cutString(["d `this is the string`", 2]);
+  assertEquals(actual, {index : 21, cuttedString : "`this is the string`"})
+  })
+  
+
+Deno.test("string with the `` and `",()=>{
+  const actual = cutString(["d `this is `the string`", 2]);
+  assertEquals(actual, {index : 21, cuttedString : "`this is the 'string`"})
+  })
+  
+
+Deno.test("Comment //",()=>{
+  const actual = isComment(["//"]);
+  assertEquals(actual, true)
+  })
+  
+
+Deno.test("Comment /*",()=>{
+  const actual = isComment(["/*"]);
+  assertEquals(actual, true)
+  })
+  
+
+Deno.test("not Comment */",()=>{
+  const actual = isComment(["*/"]);
+  assertEquals(actual, false)
+  })
+  
+
+Deno.test("not Comment \n",()=>{
+  const actual = isComment(["\n"]);
+  assertEquals(actual, false)
+  })
+  
+
+Deno.test("Comment //",()=>{
+  const actual = cutComment(["  // this is the comment\nasdf", 2]);
+  assertEquals(actual, {index : 24, cuttedString : "// this is the comment\n"})
+  })
+  
+
+Deno.test("Comment /*",()=>{
+  const actual = cutComment(["/* this is new Comment */asf", 0]);
+  assertEquals(actual, {index : 24, cuttedString : "/* this is new Comment */"})
+  })
+  
+
+Deno.test("Comment /*/",()=>{
+  const actual = cutComment(["/*/ this is new Comment */asf", 0]);
+  assertEquals(actual, {index : 25, cuttedString : "/*/ this is new Comment */"})
+  })
+  
+
+Deno.test("Comment /**/",()=>{
+  const actual = cutComment(["/**/ this is new Comment */asf", 0]);
+  assertEquals(actual, {index : 3, cuttedString : "/**/"})
+  })
+  
