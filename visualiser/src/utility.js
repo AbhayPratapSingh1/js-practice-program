@@ -8,8 +8,7 @@ export const randomInRange = (count, start = 1, end = 100) => {
 
 export const delay = (count = 1) => {
   for (let index = 0; index < count * 10e7; index++) {
-    // for (let index2 = 0; index2 < 10e4;index++)
-    // const element = array[index];
+    // so
   }
 };
 
@@ -28,4 +27,12 @@ export const deepCopy = (data) => {
     );
   }
   return data;
+};
+
+export const dbg = (x, message = "", stop = false) => {
+  console.log(`\tdbg  ${message}|`, x);
+  if (stop) {
+    prompt();
+  }
+  return x;
 };
