@@ -142,7 +142,7 @@ const dinoCord = {
   dy: SPEED,
 };
 
-const playGame = () => {
+export const playGame = () => {
   let score = 0;
   let randomIncreaseTime = 0;
   while (!isGameOver(OBSTACLES, dinoCord)) {
@@ -167,5 +167,3 @@ const playGame = () => {
   console.log("GAME OVER");
   console.log("Final Score :", score);
 };
-
-playGame();
