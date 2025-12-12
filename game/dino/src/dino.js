@@ -1,75 +1,94 @@
 const HEIGHT = 8;
 const WIDTH = 40;
-const DINO = {
+const DINO_BLUE_PRINT = {
   x: WIDTH - 2,
   y: HEIGHT - 2,
-  jumpHeight: 5,
+  jumpHeight: 3,
   icon: "🦖",
 };
+
 const GRAVITY = 1;
 const SPEED = 1;
+const GROUND = { y: HEIGHT - 1, icon: "🟫" };
+const STDOUT = { HEIGHT: 8, WIDTH: 40, bg: "🟦" };
+STDOUT.screen = Array.from(
+  { length: HEIGHT },
+  () => Array.from({ length: WIDTH }),
+);
+
+const OBSTACLES = {
+  objects: [],
+  frequency: 10,
+  frequencyRandomRange: [-4, 5],
+  curCount: 10,
+  randomChanger: 200,
+};
+
+const randomNoBetween = (st, end) =>
+  Math.floor(Math.random() * (end - st)) + st;
+
+const nearlyEqual = (a, b) => {
+  return (a - b) > -0.001 && (a - b) < 0.001;
+};
+
+const isBetween = (current, st, end) => {
+  return st < current && current < end;
+};
+
+const drawIfValid = (stdOut, x, y, icon) => {
+  if (
+    isBetween(x, -1, stdOut.WIDTH) &&
+    isBetween(y, -1, stdOut.HEIGHT)
+  ) {
+    stdOut.screen[y][x] = icon;
+  }
+};
+
+const clearScreen = (stdOut) => {
+  for (let r = 0; r < stdOut.HEIGHT; r++) {
+    for (let c = 0; c < stdOut.WIDTH; c++) {
+      stdOut.screen[r][c] = stdOut.bg;
+    }
+  }
+};
 
 const isJumpInput = (input) => {
   return input === "w";
 };
 
-const stdOut = Array.from(
-  { length: HEIGHT },
-  () => Array.from({ length: WIDTH }),
-);
-
-const clearScreen = (stdOut) => {
-  for (let r = 0; r < stdOut.length; r++) {
-    for (let c = 0; c < stdOut[r].length; c++) {
-      stdOut[r][c] = "🟦";
-    }
-  }
-};
-
 const drawGround = (stdOut, ground) => {
-  for (let col = 0; col < stdOut.at(-1).length; col++) {
-    stdOut[ground.y][col] = "🟫";
+  for (let col = 0; col < stdOut.WIDTH; col++) {
+    drawIfValid(stdOut, col, ground.y, ground.icon);
   }
-};
-const isBetween = (current, st, end) => {
-  return st < current && current < end;
 };
 
 const addDino = (stdOut, dinoCord) => {
-  drawInStdOutIfValid(stdOut, dinoCord.x, dinoCord.y, dinoCord.icon);
-};
-
-const drawInStdOutIfValid = (stdOut, x, y, icon) => {
-  if (
-    isBetween(x, -1, stdOut[0].length) &&
-    isBetween(y, -1, stdOut.length)
-  ) {
-    stdOut[y][x] = icon;
-  }
+  drawIfValid(stdOut, dinoCord.x, dinoCord.y, dinoCord.icon);
 };
 
 const drawObstacles = (stdOut, obstacles) => {
-  obstacles.foreEach(({ x, y }) => {
+  obstacles.objects.forEach(({ x, y }) => {
+    drawIfValid(stdOut, x, y, "XX");
   });
+};
+
+const drawStdOut = (screen) => {
+  console.log(screen.map((each) => each.join("")).join("\n"));
 };
 
 const drawMap = (stdOut, dinoCord, ground, obstacles) => {
   drawGround(stdOut, ground);
   addDino(stdOut, dinoCord);
   drawObstacles(stdOut, obstacles);
-  console.log(stdOut.map((each) => each.join("")).join("\n"));
-};
-// const drawDino = (stdOut, dinoPos) => {
-//   const y = Math.round(dinoPos.y);
-//   const x = Math.round(dinoPos.x);
-//   stdOut[y][x] = ;
-// };
-const nearlyEqual = (a, b) => {
-  return (a - b) > -0.001 && (a - b) < 0.001;
+
+  drawStdOut(stdOut.screen);
 };
 
 const makeDinoJump = (dinoCord) => {
-  if (!nearlyEqual(dinoCord.x, DINO.x) || !nearlyEqual(dinoCord.y, DINO.y)) {
+  if (
+    !nearlyEqual(dinoCord.x, DINO_BLUE_PRINT.x) ||
+    !nearlyEqual(dinoCord.y, DINO_BLUE_PRINT.y)
+  ) {
     return;
   }
   dinoCord.yForce = -dinoCord.jumpHeight;
@@ -87,29 +106,66 @@ const updateDinoPos = (dinoCord, ground) => {
 };
 
 const addObstacles = (obstacles) => {
-  const obstacle = { length: 1, width: 1, x: 2, y: HEIGHT - 2 };
-  obstacles.push(obstacle);
+  if (
+    obstacles.curCount >=
+      obstacles.frequency + randomNoBetween(...obstacles.frequencyRandomRange)
+  ) {
+    obstacles.curCount = 0;
+    obstacles.objects.push({ length: 1, width: 1, x: 2, y: HEIGHT - 2 });
+  }
+  obstacles.curCount++;
 };
 
-const dinoCord = { ...DINO, xForce: 0, yForce: 0, dx: SPEED, dy: SPEED };
-const ground = { y: HEIGHT - 1 };
+const updateObstacles = (obstacles) => {
+  for (let index = 0; index < obstacles.objects.length; index++) {
+    const obstacle = obstacles.objects[index];
+    obstacle.x += 1;
+  }
+};
 
-const obstacles = [];
+const isGameOver = (obstacles, dino) => {
+  for (let index = 0; index < obstacles.objects.length; index++) {
+    const object = obstacles.objects[index];
+
+    if (dino.x === object.x && dino.y === object.y) {
+      return true;
+    }
+  }
+  return false;
+};
+
+const dinoCord = {
+  ...DINO_BLUE_PRINT,
+  xForce: 0,
+  yForce: 0,
+  dx: SPEED,
+  dy: SPEED,
+};
+
 const playGame = () => {
-  let toPlay = true;
-  addObstacles(obstacles);
-  while (toPlay) {
+  let score = 0;
+  let randomIncreaseTime = 0;
+  while (!isGameOver(OBSTACLES, dinoCord)) {
+    score++;
     console.clear();
-    clearScreen(stdOut);
-
-    drawMap(stdOut, dinoCord, ground, obstacles);
-
+    addObstacles(OBSTACLES);
+    clearScreen(STDOUT);
+    console.log("Current Score :", score);
+    drawMap(STDOUT, dinoCord, GROUND, OBSTACLES);
     const input = prompt("w for jump :");
     if (isJumpInput(input)) {
       makeDinoJump(dinoCord);
     }
-    updateDinoPos(dinoCord, ground);
+    updateDinoPos(dinoCord, GROUND);
+    updateObstacles(OBSTACLES);
+    if (randomIncreaseTime++ === OBSTACLES.randomChanger) {
+      randomIncreaseTime = 0;
+      OBSTACLES.frequencyRandomRange[0] -= 1;
+    }
   }
+
+  console.log("GAME OVER");
+  console.log("Final Score :", score);
 };
 
 playGame();
