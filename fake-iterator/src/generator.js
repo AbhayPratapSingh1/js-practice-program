@@ -2,6 +2,12 @@ const generator = () => {
   let i = 0;
 
   return {
+    next() {
+      return { done: false, value: i++ };
+    },
+    [Symbol.iterator]() {
+      return this;
+    },
     take(n) {
       let c = 0;
       const prevNext = this.next;
@@ -42,12 +48,6 @@ const generator = () => {
       };
 
       this.next = newNext;
-      return this;
-    },
-    next() {
-      return { done: false, value: i++ };
-    },
-    [Symbol.iterator]() {
       return this;
     },
   };
