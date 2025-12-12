@@ -12,7 +12,7 @@ const createIterator = (from = 10, to = -1, st = -1, predicate) => {
     next: () => {
       return predicate(lastValue, to)
         ? { done: false, value: lastValue += st }
-        : { done: true };
+        :  { done: true };
     },
 
     [SYMBOL(_SYMBOL.iterator)]: function () {
@@ -20,6 +20,8 @@ const createIterator = (from = 10, to = -1, st = -1, predicate) => {
     },
   };
 };
+
+
 
 const myItrIncrement = createIterator(5, 15, 1, (i, end) => i < end);
 const myItrDecrement = createIterator(15, 5, -1, (i, end) => i > end);
