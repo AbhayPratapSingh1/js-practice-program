@@ -40,7 +40,6 @@ const ADD_SPACE_RIGHT = [
 
 const ADD_SPACE_LEFT = ["{"];
 const NO_SPACE_CHARACTER = ["(", ")", "}", "."];
-// const SAME_FAMILY = [">=", "<=", "==", "!=", "))"];
 
 const NON_TERMINALING_CHARACTER = ["{", ",", ""];
 

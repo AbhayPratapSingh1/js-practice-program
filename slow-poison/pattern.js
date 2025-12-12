@@ -26,6 +26,9 @@ const drawLines = (value, style) => {
   return value.map((each) => style(each));
 };
 
+// [[4 , 4 , 4, 4]]
+// [ [4], [4, 4] , [4]]
+
 const monolyth = (m) => {
   return [m];
 };
