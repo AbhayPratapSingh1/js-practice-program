@@ -1,0 +1,90 @@
+const moveRover = function () {
+  const possibleActions = {
+    N: () => ++this.y,
+    E: () => ++this.x,
+    W: () => --this.x,
+    S: () => --this.y,
+  };
+
+  possibleActions[this.orientation]();
+};
+
+const DIRECTIONS = ["N", "E", "S", "W"];
+const directionCycler = function (current) {
+  let i = DIRECTIONS.indexOf(current);
+
+  return (rotation) => {
+    const isAntiClockwise = rotation === "L";
+
+    const incrementInI = isAntiClockwise ? 3 : 1;
+    i = (i + incrementInI) % DIRECTIONS.length;
+
+    return DIRECTIONS[i];
+  };
+};
+
+const createRover = (roverPosition) => {
+  const updateOrientation = directionCycler(
+    roverPosition.orientation,
+  );
+
+  const rotateRover = (direction) =>
+    roverPosition.orientation = updateOrientation(direction);
+
+  const actions = {
+    "M": moveRover.bind(roverPosition),
+    "L": rotateRover.bind(roverPosition, "L"),
+    "R": rotateRover.bind(roverPosition, "R"),
+  };
+  const roverCurrentPosition = roverPosition;
+
+  return [actions, roverCurrentPosition];
+};
+
+const formatRoverData = (rover) => {
+  return `${rover.x} ${rover.y} ${rover.orientation}`;
+};
+const parsePosition = (position) => {
+  const [x, y, orientation] = position.split(" ");
+  return { x: parseInt(x), y: parseInt(y), orientation };
+};
+
+const isBetween = (objectPos, startPos, endPos, axis = "x") => {
+  return startPos[axis] <= objectPos[axis] && objectPos[axis] <= endPos[axis];
+};
+
+export const isCordsBetween = (objectPos, firstCord, secondCord) => {
+  const isInX = isBetween(objectPos, firstCord, secondCord, "x");
+  const isInY = isBetween(objectPos, firstCord, secondCord, "y");
+  return isInY && isInX;
+};
+
+export const parseCoordinates = (position) => {
+  const [x, y] = position.split(" ");
+  return { x: +x, y: +y };
+};
+
+export const executeInstructions = (position, instructions, platue) => {
+  const roverPosition = parsePosition(position);
+  const [actions, currentRoverPosition] = createRover(roverPosition);
+
+  const platueTopRightPosition = parseCoordinates(platue);
+  const platueBottomLeftPosition = { x: 0, y: 0 };
+
+  for (const command of instructions) {
+    const { x, y, orientation } = currentRoverPosition;
+    const roverPositionBeforeMove = { x, y, orientation };
+    actions[command](currentRoverPosition);
+    if (
+      !isCordsBetween(
+        currentRoverPosition,
+        platueBottomLeftPosition,
+        platueTopRightPosition,
+      )
+    ) {
+      return `${formatRoverData(roverPositionBeforeMove)} RIP`;
+    }
+  }
+
+  return formatRoverData(currentRoverPosition);
+};

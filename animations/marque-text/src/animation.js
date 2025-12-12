@@ -1,40 +1,55 @@
 const BG_ICON = " ";
-const SCREEN_DIMENSTION = {
+
+const SCREEN = {
   width: 40,
   height: 20,
+  pixels: [],
 };
 
 const makeNewScreen = () => {
-  return [...BG_ICON.repeat(SCREEN_DIMENSTION.height)].map((each) => each)
-    .map(() => [...BG_ICON.repeat(SCREEN_DIMENSTION.width)]);
+  return Array.from(
+    { length: SCREEN.height },
+    () => Array.from({ length: SCREEN.width }, () => BG_ICON),
+  );
 };
-
-let SCREEN = makeNewScreen();
+SCREEN.pixels = makeNewScreen();
 
 const clearScreen = () => {
-  SCREEN = makeNewScreen();
+  SCREEN.pixels = makeNewScreen();
 };
 
 const showScreen = (screen) => {
   console.clear();
-  console.log(screen.map((each) => each.join("")).join("\n"));
+  console.log("┌" + "—".repeat(screen[0].length) + "┐");
+  console.log(screen.map((each) => "|" + each.join("") + "|").join("\n"));
+  console.log("└" + "—".repeat(screen[0].length) + "┘");
 };
 
 const randomNoBetween = (st, end) => {
   return st + Math.floor(Math.random() * (end - st));
 };
 
+const drawCharAt = (screen, char, x, y) => {
+  if (x < 0 || screen.width <= x) {
+    return;
+  }
+  if (y < 0 || screen.height <= y) {
+    return;
+  }
+  screen.pixels[y][x] = char;
+};
+
 const DIRECTION = ["Horizonatal", "Vertical"];
 
 const createNewObject = (text) => ({
-  text: text,
+  text,
   currentCount: 0,
   updateIn: randomNoBetween(1, 15),
   type: DIRECTION[randomNoBetween(0, 2)],
   dc: (randomNoBetween(0, 2) * 2) - 1,
   cord: {
-    x: randomNoBetween(0, SCREEN[0].length),
-    y: randomNoBetween(0, SCREEN.length),
+    x: randomNoBetween(0, SCREEN.pixels[0].length),
+    y: randomNoBetween(0, SCREEN.pixels.length),
   },
 });
 
@@ -44,40 +59,39 @@ const strings = [
 ];
 
 const objects = strings.map((each) => createNewObject(each));
-// console.log(SCREEN.length, SCREEN[0].length);
-// console.log("objects", objects);
 
 const updateCordHorizontal = ({ x, y }, length, dc) => {
   let newX = x + dc;
-  if (newX === SCREEN[0].length) {
+  if (newX === SCREEN.pixels[0].length) {
     newX = -length;
   } else if (newX === -length) {
-    newX = SCREEN[0].length - 1;
+    newX = SCREEN.pixels[0].length - 1;
   }
   return { x: newX, y };
 };
+
 const updateCordVertical = ({ x, y }, length, dc) => {
   let newY = y + dc;
-  if (newY === SCREEN.length) {
+  if (newY === SCREEN.pixels.length) {
     newY = -length;
   } else if (newY === -length) {
-    newY = SCREEN.length - 1;
+    newY = SCREEN.pixels.length - 1;
   }
   return { x, y: newY };
 };
 
 const placeSingleStringHorizontal = (text, { x, y }) => {
   for (let index = 0; index < text.length; index++) {
-    if (SCREEN[y].length > x + index) {
-      SCREEN[y][x + index] = text[index];
+    if (SCREEN.pixels[y].length > x + index) {
+      drawCharAt(SCREEN, text[index], x + index, y);
     }
   }
 };
 
 const placeSingleStringVertical = (text, { x, y }) => {
   for (let index = 0; index < text.length; index++) {
-    if (y + index > -1 && y + index < SCREEN.length) {
-      SCREEN[y + index][x] = text[index];
+    if (y + index > -1 && y + index < SCREEN.pixels.length) {
+      drawCharAt(SCREEN, text[index], x, index + y);
     }
   }
 };
@@ -87,6 +101,7 @@ const placeString = () => {
     if (each.currentCount === 0) {
       each.cord = updateFuncs[each.type](each.cord, each.text.length, each.dc);
     }
+
     each.currentCount = (each.currentCount + 1) % each.updateIn;
     placeStringFunc[each.type](each.text, each.cord);
   });
@@ -103,10 +118,11 @@ const placeStringFunc = {
 };
 
 const frameNoice = (screen, noiceIcon = "-") => {
-  const noicesCount = randomNoBetween(1, 3);
+  const noicesCount = randomNoBetween(1, 10);
   for (let _ = 0; _ < noicesCount; _++) {
     const x = randomNoBetween(0, screen[0].length);
     const y = randomNoBetween(0, screen.length);
+
     screen[y][x] = screen[y][x] === BG_ICON ? noiceIcon : screen[y][x];
   }
 };
@@ -179,13 +195,14 @@ export const animations = () => {
     clearScreen();
 
     placeString();
-    jumpColumn(SCREEN, [3, 4, 12, 13]);
 
-    addWaterImage(SCREEN);
-    addMirrorImage(SCREEN);
+    jumpColumn(SCREEN.pixels, [3, 4, 12, 13]);
 
-    frameNoice(SCREEN);
-    addGlich(SCREEN, 10);
-    showScreen(SCREEN);
-  }, 100);
+    addWaterImage(SCREEN.pixels);
+    addMirrorImage(SCREEN.pixels);
+
+    frameNoice(SCREEN.pixels);
+    addGlich(SCREEN.pixels, 10);
+    showScreen(SCREEN.pixels);
+  }, 20);
 };
