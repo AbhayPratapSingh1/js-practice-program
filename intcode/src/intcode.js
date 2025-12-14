@@ -30,10 +30,11 @@ const opCode = {
   },
   99: (computer) => {
     computer.isHalted = true;
-    return computer.pointer + 1;
+    return computer.pointer;
   },
 };
-const executeInstruction = (computer) => {
+
+export const executeInstruction = (computer) => {
   const instructionToExecute = computer.program[computer.pointer];
 
   return opCode[instructionToExecute](computer);
