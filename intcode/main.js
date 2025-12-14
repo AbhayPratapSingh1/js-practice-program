@@ -5,5 +5,4 @@ const program = Deno.readTextFileSync(
 ).split(",").map((each) => +each);
 const computer = makeComputer(program, [[1, 12], [2, 2]]);
 
-runDebugger(computer, true);
-console.log(computer.program[0]);
+runDebugger(computer);

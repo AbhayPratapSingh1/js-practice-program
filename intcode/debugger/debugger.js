@@ -14,21 +14,19 @@ const addColorToCell = (
   colorParamsArray.push(antiProperty);
 };
 
-const showProgram = (
-  program,
-  parameterToColor = [],
-  defaulMinWidth = 10,
-) => {
-  const programAsString = program.map((each) => each.toString());
-  const padSize = Math.max(
-    ...(programAsString.map((each) => each.length)),
-    defaulMinWidth,
-  );
+const paddedComputerMemory = (program, defaultMin = 10) => {
+  const programAsStrings = program.map((each) => each.toString());
+  const programInstructionLengths = programAsStrings.map((each) => each.length);
+  const padSize = Math.max(defaultMin, ...programInstructionLengths);
+  return programAsStrings.map((each) => each.padStart(padSize));
+};
 
-  const paddedProgram = programAsString.map((each) => each.padStart(padSize));
+const showProgram = (program, toColor = [], minCellWidth = 10) => {
+  const paddedProgram = paddedComputerMemory(program, minCellWidth);
 
   const colorParams = [];
-  parameterToColor.forEach(({ index, color, resetColor }) => {
+
+  toColor.forEach(({ index, color, resetColor }) => {
     addColorToCell(paddedProgram, index, colorParams, color, resetColor);
   });
 
@@ -46,53 +44,51 @@ const getParameterCount = {
   99: 0,
 };
 
+const colorInstruction = (index) => ({
+  index: index,
+  color: "background-color: red; color:rgb(200,200,0)",
+  resetColor: "background-color: black; color:white",
+});
+
+const colorParam = (index) => ({
+  index,
+  color: "background-color: rgb(250,250,250); color:black",
+  resetColor: "background-color: black; color:white",
+});
+
 const colorInstructionAndParam = (computer) => {
   const param = [];
-  const instructionColorObject = {
-    index: computer.pointer,
-    color: "background-color: red; color:black",
-    resetColor: "background-color: black; color:white",
-  };
-  param.push(instructionColorObject);
+
+  param.push(colorInstruction(computer.pointer));
 
   const parameterCount =
     getParameterCount[computer.program[computer.pointer] % 100];
-  for (let index = 0; index < parameterCount; index++) {
-    const paramObject = {
-      index: computer.pointer + index + 1,
-      color: "background-color: grey; color:black",
-      resetColor: "background-color: black; color:white",
-    };
+
+  for (let dx = 1; dx < parameterCount + 1; dx++) {
+    const paramObject = colorParam(computer.pointer + dx);
     param.push(paramObject);
   }
 
   return param;
 };
 
-const delay = () => {
-  for (let index = 0; index < 1000000000; index++) {
-  }
-};
-
-export const runDebugger = (computer, showMode = false) => {
+export const runDebugger = (computer) => {
   console.clear();
   const paramsPropertyMarking = colorInstructionAndParam(computer);
+
   showProgram(computer.program, paramsPropertyMarking);
-  if (showMode) {
-    delay();
-  } else {
-    prompt("");
-  }
+  console.log("Instruction :", computer.program[computer.pointer]);
+  console.log("pointer :", computer.pointer);
+  prompt("");
+
   while (!computer.isHalted) {
     console.clear();
     computer.pointer = executeInstruction(computer);
 
-    const paramsPropertyMarking = colorInstructionAndParam(computer);
-    showProgram(computer.program, paramsPropertyMarking);
-    if (showMode) {
-      delay();
-    } else {
-      prompt("");
-    }
+    const toColor = colorInstructionAndParam(computer);
+    showProgram(computer.program, toColor);
+    console.log("Instruction :", computer.program[computer.pointer]);
+    console.log("pointer :", computer.pointer);
+    prompt("");
   }
 };
