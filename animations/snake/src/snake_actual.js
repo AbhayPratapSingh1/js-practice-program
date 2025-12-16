@@ -88,9 +88,7 @@ const movements = {
 };
 
 const moveSnake = (screen, snake) => {
-  snake.x += snake.dx;
-  snake.y += snake.dy;
-  // movements[snake.direction](screen, snake);
+  movements[snake.direction](screen, snake);
 };
 
 const drawTail = {
@@ -101,8 +99,14 @@ const drawTail = {
 };
 
 const moveTail = (snake) => {
-  const icon = ".";
-  snake.locations.push({ x: snake.x, y: snake.y, icon });
+  // const direction = ["E", "W"].includes(snake.direction) ? "—" : "|";
+  const direction = drawTail[snake.direction];
+  snake.locations.push({ x: snake.x, y: snake.y, icon: direction });
+};
+
+const AXIS_DIRECTION = {
+  x: ["E", "W"],
+  y: ["N", "S"],
 };
 
 const snakeNewDirection = (snake, fruit = { x: 5, y: 5 }) => {
@@ -110,42 +114,33 @@ const snakeNewDirection = (snake, fruit = { x: 5, y: 5 }) => {
   const dsx = snake.x - fruit.x;
   const dfy = fruit.y - snake.y;
   const dsy = snake.y - fruit.y;
-
+  
   console.log(dfx, dfy);
 
   if (dfx === 0) {
-    // if (AXIS_DIRECTION.y.includes(snake.direction)) {
-    //   return;
-    // } else {
-    snake.dx = 0;
-    snake.dy = dfy > dsy ? 1 : -1;
-    // snake.direction = dfy > dsy ? "S" : "N";
-    // }
+    if (AXIS_DIRECTION.y.includes(snake.direction)) {
+      return;
+    } else {
+      snake.direction = dfy > dsy ? "S" : "N";
+    }
   } else if (dfy === 0) {
-    // if (AXIS_DIRECTION.x.includes(snake.direction)) {
-    //   return;
-    // } else {
-    snake.dx = dfx > dsx ? 1 : -1;
-    snake.dy = 0;
-    // snake.direction = dfx > dsx ? "E" : "W";
-    // }
+    if (AXIS_DIRECTION.x.includes(snake.direction)) {
+      return;
+    } else {
+      snake.direction = dfx > dsx ? "E" : "W";
+    }
   } else if (dfx > dfy) {
-    // if (AXIS_DIRECTION.x.includes(snake.direction)) {
-    //   return;
-    // } else {
-    // } else {
-    snake.dx = dfx > dsx ? 1 : -1;
-    snake.dy = 0;
-    // snake.direction = dfx > dsx ? "E" : "W";
-    // }
+    if (AXIS_DIRECTION.x.includes(snake.direction)) {
+      return;
+    } else {
+      snake.direction = dfx > dsx ? "E" : "W";
+    }
   } else {
-    // if (AXIS_DIRECTION.y.includes(snake.direction)) {
-    // return;
-    // } else {
-    snake.dx = 0;
-    snake.dy = dfy > dsy ? 1 : -1;
-    // snake.direction = dfy > dsy ? "S" : "N";
-    // }
+    if (AXIS_DIRECTION.y.includes(snake.direction)) {
+      return;
+    } else {
+      snake.direction = dfy > dsy ? "S" : "N";
+    }
   }
 };
 
