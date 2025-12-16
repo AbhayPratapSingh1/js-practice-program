@@ -49,55 +49,20 @@ const createScreen = (height, width) => ({
   height,
   width,
 });
-
-const isOut = (bar, prev, screen) => {
-  let checkingY = prev.y;
-  let checkingX = prev.x;
-  if (prev.y <= 0) {
-    checkingX -= 1;
-    checkingY = screen.height;
-  }
-  return (bar.y + bar.length === checkingY) && (bar.x === checkingX);
-};
-
-const movements = {
-  N: (screen, snake) => {
-    if (snake.y === 0) {
-      snake.y = screen.height;
-    }
-    snake.y -= 1;
-  },
-  S: (screen, snake) => {
-    if (snake.y === screen.height) {
-      snake.y = -1;
-    }
-    snake.y += 1;
-  },
-  W: (screen, snake) => {
-    if (snake.x === 0) {
-      snake.x = screen.width;
-    }
-    snake.x -= 1;
-  },
-  E: (screen, snake) => {
-    if (snake.x === screen.width) {
-      snake.x = -1;
-    }
-    snake.x += 1;
-  },
-};
-
 const moveSnake = (screen, snake) => {
+  if (snake.x === screen.width && snake.dx === 1) {
+    snake.x = 0;
+  } else if (snake.x === 0 && snake.dx === -1) {
+    snake.x = screen.width;
+  }
+  if (snake.y === screen.height && snake.dy === 1) {
+    snake.y = 0;
+  } else if (snake.y === 0 && snake.dy === -1) {
+    snake.y = screen.height;
+  }
+
   snake.x += snake.dx;
   snake.y += snake.dy;
-  // movements[snake.direction](screen, snake);
-};
-
-const drawTail = {
-  "E": "—",
-  "W": "—",
-  "N": "|",
-  "S": "|",
 };
 
 const moveTail = (snake) => {
@@ -114,38 +79,25 @@ const snakeNewDirection = (snake, fruit = { x: 5, y: 5 }) => {
   console.log(dfx, dfy);
 
   if (dfx === 0) {
-    // if (AXIS_DIRECTION.y.includes(snake.direction)) {
-    //   return;
-    // } else {
-    snake.dx = 0;
-    snake.dy = dfy > dsy ? 1 : -1;
-    // snake.direction = dfy > dsy ? "S" : "N";
-    // }
+    if (snake.dy !== 1 && snake.dy !== -1) {
+      snake.dx = 0;
+      snake.dy = dfy > dsy ? 1 : -1;
+    }
   } else if (dfy === 0) {
-    // if (AXIS_DIRECTION.x.includes(snake.direction)) {
-    //   return;
-    // } else {
-    snake.dx = dfx > dsx ? 1 : -1;
-    snake.dy = 0;
-    // snake.direction = dfx > dsx ? "E" : "W";
-    // }
+    if (snake.dx !== 1 && snake.dx !== -1) {
+      snake.dx = dfx > dsx ? 1 : -1;
+      snake.dy = 0;
+    }
   } else if (dfx > dfy) {
-    // if (AXIS_DIRECTION.x.includes(snake.direction)) {
-    //   return;
-    // } else {
-    // } else {
-    snake.dx = dfx > dsx ? 1 : -1;
-    snake.dy = 0;
-    // snake.direction = dfx > dsx ? "E" : "W";
-    // }
+    if (snake.dx !== 1 && snake.dx !== -1) {
+      snake.dx = dfx > dsx ? 1 : -1;
+      snake.dy = 0;
+    }
   } else {
-    // if (AXIS_DIRECTION.y.includes(snake.direction)) {
-    // return;
-    // } else {
-    snake.dx = 0;
-    snake.dy = dfy > dsy ? 1 : -1;
-    // snake.direction = dfy > dsy ? "S" : "N";
-    // }
+    if (snake.dy !== 1 && snake.dy !== -1) {
+      snake.dx = 0;
+      snake.dy = dfy > dsy ? 1 : -1;
+    }
   }
 };
 
