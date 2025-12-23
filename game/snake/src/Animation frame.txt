@@ -1,0 +1,11 @@
+drviers => create not assignened
+customer => create not assigned but have postions
+
+
+Animation frame 
+  C  -> chekc assignement customer
+  C  -> if no assingemetn assign
+  C  -> if assined -> postion reached -> clear previous new posiion of cusomter
+
+  D  -> if assigned => move
+  D  -> if assigned and is reached => unAssigned
