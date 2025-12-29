@@ -24,6 +24,12 @@ const OBSTACLES = {
   randomChanger: 200,
 };
 
+const readAndClearFile = () => {
+  const data = Deno.readTextFileSync("./inputBuffer.txt");
+  Deno.writeTextFileSync("./inputBuffer.txt", "");
+  return data;
+};
+
 const randomNoBetween = (st, end) =>
   Math.floor(Math.random() * (end - st)) + st;
 
@@ -53,7 +59,7 @@ const clearScreen = (stdOut) => {
 };
 
 const isJumpInput = (input) => {
-  return input === "w";
+  return input === "j";
 };
 
 const drawGround = (stdOut, ground) => {
@@ -145,25 +151,31 @@ const dinoCord = {
 export const playGame = () => {
   let score = 0;
   let randomIncreaseTime = 0;
-  while (!isGameOver(OBSTACLES, dinoCord)) {
+  let round = 1;
+  const gameId = setInterval(() => {
     score++;
     console.clear();
-    addObstacles(OBSTACLES);
     clearScreen(STDOUT);
     console.log("Current Score :", score);
     drawMap(STDOUT, dinoCord, GROUND, OBSTACLES);
-    const input = prompt("w for jump :");
+    const input = readAndClearFile();
     if (isJumpInput(input)) {
       makeDinoJump(dinoCord);
     }
-    updateDinoPos(dinoCord, GROUND);
-    updateObstacles(OBSTACLES);
+    if (round % 2 === 0) {
+      addObstacles(OBSTACLES);
+      updateDinoPos(dinoCord, GROUND);
+      updateObstacles(OBSTACLES);
+    }
     if (randomIncreaseTime++ === OBSTACLES.randomChanger) {
       randomIncreaseTime = 0;
       OBSTACLES.frequencyRandomRange[0] -= 1;
     }
-  }
-
-  console.log("GAME OVER");
-  console.log("Final Score :", score);
+    round++;
+    if (isGameOver(OBSTACLES, dinoCord)) {
+      clearInterval(gameId);
+      console.log("GAME OVER");
+      console.log("Final Score :", score);
+    }
+  }, 50);
 };
