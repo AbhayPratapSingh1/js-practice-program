@@ -1,26 +1,24 @@
 class MyPromise {
   constructor(callback) {
+    this.callback = callback;
     this.isResolved = false;
-    this.val = null;
+    this.resolvedValue = null;
 
-    this.toExecute = (val) => {
+    this.toExecute = (resolvedValue) => {
       this.isResolved = true;
-      this.val = val;
+      this.resolvedValue = resolvedValue;
     };
 
-    callback(this.resolve, this.reject);
+    this.callback(this.resolve, this.reject);
   }
 
   resolve = (val) => {
     console.log("Value Resolved");
-    // resolve the value here
     this.toExecute(val);
   };
 
   reject = (val) => {
     console.log("Value Rejected");
-
-    // threw the error here
     this.toExecute(val);
   };
 
@@ -28,15 +26,17 @@ class MyPromise {
     if (this.isResolved) {
       return new MyPromise((resolve, reject) => {
         resolve(val);
-        callback(this.val);
+        callback(this.resolvedValue);
       });
     } else {
+      console.log("needed to be resolved");
+
       const prev = this.toExecute;
       const newCall = (resolve, reject) => {
         const newToExec = (val) => {
           prev(val);
-          this.val = callback(this.val);
-          resolve(this.val);
+          this.resolvedValue = callback(this.resolvedValue);
+          resolve(this.resolvedValue);
         };
         this.toExecute = newToExec;
       };
