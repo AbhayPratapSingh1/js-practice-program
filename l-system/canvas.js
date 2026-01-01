@@ -1,5 +1,5 @@
 import { createScreen, displayScreen } from "./drawScreen.js";
-import { arc, circle, pieceOfCake } from "./shapes.js";
+import { arc, circle, pieceOfCake, polygon } from "./shapes.js";
 
 const configData = await Deno.readTextFile("./canvasConfig.json");
 const config = JSON.parse(configData);
@@ -22,7 +22,30 @@ const createEye = (screen, x, dy = 0, radius = 120) => {
   arc(c2, 240, 300, radius, screen, false);
 };
 
-createEye(screen, screen.width / 4, -50);
-createEye(screen, 3 * (screen.width / 4), -50);
+const createNose = (screen, center) => {
+  polygon({ x: center.x, y: center.y + 10 }, 30, 3, screen, 30);
+};
+
+const createMouth = (screen, center) => {
+  const bigCircleCenter = { x: center.x, y: center.y - 10 };
+  const bigCircleRadius = 100;
+  const smallCircleCenter = {
+    x: center.x,
+    y: (bigCircleRadius / 2) + bigCircleCenter.y + 20,
+  };
+
+  arc(bigCircleCenter, 60, 120, bigCircleRadius, screen, false);
+  arc(smallCircleCenter, 70, 110, bigCircleRadius / 2, screen, false);
+};
+
+const createFace = (screen, center) => {
+  createEye(screen, screen.width / 4, -50);
+  createEye(screen, 3 * (screen.width / 4), -50);
+
+  createNose(screen, center);
+  createMouth(screen, center);
+};
+
+createFace(screen, center);
 
 displayScreen(screen);
