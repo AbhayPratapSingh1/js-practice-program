@@ -1,4 +1,5 @@
 import { plotPoint } from "./drawScreen.js";
+
 const [r, g, b] = [0, 0, 0];
 const ICON = `\x1b[48;2;${r};${g};${b}m  \x1b[0m`;
 

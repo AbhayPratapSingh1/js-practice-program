@@ -1,5 +1,5 @@
-import { createScreen, displayScreen } from "../drawScreen.js";
-import { arc, circle, pieceOfCake, polygon } from "../shapes.js";
+import { createScreen, displayScreen } from "../src/drawScreen.js";
+import { arc, circle, pieceOfCake, polygon } from "../src/shapes.js";
 
 const configData = await Deno.readTextFile("./canvasConfig.json");
 const config = JSON.parse(configData);

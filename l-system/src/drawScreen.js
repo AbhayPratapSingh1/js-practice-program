@@ -1,4 +1,5 @@
 import { chunk } from "./chunk.js";
+
 const BG_ICON = `\x1b[48;2;255;255;255m  \x1b[0m`;
 
 export const createScreen = (config) => {
@@ -12,12 +13,15 @@ export const createScreen = (config) => {
   };
 };
 
-const asyncDraw = async (grid, size = 25) => {
+const asyncDraw = async (grid, size = 40) => {
   const parts = chunk(grid, size);
   for (const part of parts) {
-    await setTimeout(() => {
-      console.log(part.map((row) => row.join("")).join("\n"));
-    }, 500);
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        console.log(part.map((row) => row.join("")).join("\n"));
+        resolve();
+      }, 500);
+    });
   }
 };
 
