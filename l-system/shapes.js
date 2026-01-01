@@ -27,7 +27,7 @@ export const line = (p1, p2, screen, icon = ICON) => {
   }
 };
 
-export const polygon = (center, diagonal, sides, offset = 0) => {
+export const polygonPoints = (center, diagonal, sides, offset = 0) => {
   const dAngle = 360 / sides;
   const points = [];
   for (let index = 0; index < sides; index++) {
@@ -39,8 +39,18 @@ export const polygon = (center, diagonal, sides, offset = 0) => {
   return points;
 };
 
+export const polygon = (center, diagonal, sides, screen, offset = 0) => {
+  const points = polygonPoints(center, diagonal, sides, offset);
+
+  for (let index = 0; index < points.length - 1; index++) {
+    line(points[index], points[index + 1], screen);
+  }
+
+  line(points[0], points.at(-1), screen);
+};
+
 export const circle = (center, radius, screen) => {
-  const points = polygon(center, radius, radius);
+  const points = polygonPoints(center, radius, radius);
 
   for (let index = 0; index < points.length - 1; index++) {
     line(points[index], points[index + 1], screen);
