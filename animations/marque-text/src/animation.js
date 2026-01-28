@@ -198,11 +198,11 @@ export const animations = () => {
 
     jumpColumn(SCREEN.pixels, [3, 4, 12, 13]);
 
-    addWaterImage(SCREEN.pixels);
-    addMirrorImage(SCREEN.pixels);
+    // addWaterImage(SCREEN.pixels);
+    // addMirrorImage(SCREEN.pixels);
 
-    frameNoice(SCREEN.pixels);
-    addGlich(SCREEN.pixels, 10);
+    // frameNoice(SCREEN.pixels);
+    // addGlich(SCREEN.pixels, 10);
     showScreen(SCREEN.pixels);
-  }, 20);
+  }, 100);
 };

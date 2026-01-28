@@ -9,7 +9,7 @@ const conversionFormula = {
   "]": "]",
 };
 
-const screen = createScreen({ height: 300, width: 300 });
+const screen = createScreen({ height: 800, width: 800 });
 const turtle = new Turtle(screen.width / 2, screen.height, screen, 270);
 
 const moveOneGeneration = (pattern) =>
@@ -47,7 +47,9 @@ const drawPattern = (pattern, turtle) => {
 
 const main = (turtle) => {
   let pattern = ["0"];
-  for (let index = 0; index < 6; index++) {
+  for (let index = 0; index < 7; index++) {
+    console.log(pattern.join(""));
+
     pattern = moveOneGeneration(pattern);
   }
 

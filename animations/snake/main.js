@@ -1,6 +1,6 @@
 import { snakeAnimation } from "./src/snake.js";
 
-snakeAnimation({
+const snake = {
   x: 0,
   y: 0,
   dx: 1,
@@ -10,4 +10,6 @@ snakeAnimation({
   icon: "X",
   tailIcon: "-",
   direction: "S",
-});
+};
+
+snakeAnimation(snake);

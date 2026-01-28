@@ -1,4 +1,3 @@
-import { white } from "jsr:@std/internal@^1.0.12/styles";
 import { executeInstruction } from "../src/intcode.js";
 import { chunk } from "@std/collections";
 
@@ -21,7 +20,7 @@ const paddedComputerMemory = (program, defaultMin = 10) => {
   return programAsStrings.map((each) => each.padStart(padSize));
 };
 
-const showProgram = (program, toColor = [], minCellWidth = 10) => {
+const showProgram = (program, toColor = [], minCellWidth = 10, cols = 8) => {
   const paddedProgram = paddedComputerMemory(program, minCellWidth);
 
   const colorParams = [];
@@ -30,7 +29,7 @@ const showProgram = (program, toColor = [], minCellWidth = 10) => {
     addColorToCell(paddedProgram, index, colorParams, color, resetColor);
   });
 
-  const chunkParts = chunk(paddedProgram, 8);
+  const chunkParts = chunk(paddedProgram, cols);
 
   console.log(
     chunkParts.map((each) => each.join("  ")).join("\n"),
@@ -72,11 +71,11 @@ const colorInstructionAndParam = (computer) => {
   return param;
 };
 
-export const runDebugger = (computer) => {
+export const runDebugger = (computer, minWidth = 10, columnsCount) => {
   console.clear();
   const paramsPropertyMarking = colorInstructionAndParam(computer);
 
-  showProgram(computer.program, paramsPropertyMarking);
+  showProgram(computer.program, paramsPropertyMarking, minWidth, columnsCount);
   console.log("Instruction :", computer.program[computer.pointer]);
   console.log("pointer :", computer.pointer);
   prompt("");
@@ -86,7 +85,7 @@ export const runDebugger = (computer) => {
     computer.pointer = executeInstruction(computer);
 
     const toColor = colorInstructionAndParam(computer);
-    showProgram(computer.program, toColor);
+    showProgram(computer.program, toColor, minWidth, columnsCount);
     console.log("Instruction :", computer.program[computer.pointer]);
     console.log("pointer :", computer.pointer);
     prompt("");

@@ -1,0 +1,5 @@
+- remove the excess spaces
+- add and remove spaces for required character
+- add semicolens in the lines which don't have it
+- remove excess next line characters
+- add nextline character before and after the for and ifs

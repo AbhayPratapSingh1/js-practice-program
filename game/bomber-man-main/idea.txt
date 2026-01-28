@@ -1,0 +1,6 @@
+1. So basically i have 2 ways of doing a thing!
+  a. stroing the coordinated of the walls and merging it in the last!
+  b. storing the coordinate of the gate and when wall got burn convert it into the gate!
+
+2. Till now i am going thought the first approach, but i guess i should go with the second one!
+3. I tried the 2nd one and its working perfectly but no w i have to add other things because of that i feel like 1st one is better logic.

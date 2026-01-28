@@ -109,15 +109,12 @@ export const pieceOfCake = (
   screen,
   clockWise = true,
 ) => {
-  console.log();
-
   arc(center, start, end, radius, screen, clockWise);
 
   const stX = (Math.cos(toRadian(start)) * radius) + center.x;
   const stY = (Math.sin(toRadian(start)) * radius) + center.y;
   const endX = (Math.cos(toRadian(end)) * radius) + center.x;
   const endY = (Math.sin(toRadian(end)) * radius) + center.y;
-  console.log({ stX, stY, endX, endY });
 
   line({ x: stX, y: stY }, center, screen);
   line({ x: endX, y: endY }, center, screen);

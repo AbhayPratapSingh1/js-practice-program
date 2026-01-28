@@ -13,14 +13,14 @@ export const createScreen = (config) => {
   };
 };
 
-const asyncDraw = async (grid, size = 40) => {
+const asyncDraw = async (grid, size = 1000) => {
   const parts = chunk(grid, size);
   for (const part of parts) {
     await new Promise((resolve) => {
       setTimeout(() => {
         console.log(part.map((row) => row.join("")).join("\n"));
         resolve();
-      }, 500);
+      }, 100);
     });
   }
 };

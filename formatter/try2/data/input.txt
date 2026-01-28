@@ -1,0 +1,12 @@
+export   let    UNFORMATED_DATA;
+try   {
+  UNFORMATED_DATA = Deno.readTextFileSync("../data/input.txt");
+}    catch   {
+    console.log( "Cann't find on direct file" );
+
+  try   {
+    UNFORMATED_DATA = Deno.readTextFileSync("./data/input.txt");
+  }    catch 
+  {
+       console.log("Unable top read File");
+    } }

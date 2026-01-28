@@ -1,10 +1,15 @@
-const showScreen = (grid) => {
-  console.log(grid.map((each) => each.join("")).join("\n"));
+const showScreen = (screen) => {
+  console.clear();
+  console.log("┌" + "—".repeat(screen.height) + "┐");
+  console.log(
+    screen.pixels.map((each) => "|" + each.join("") + "|").join("\n"),
+  );
+  console.log("└" + "—".repeat(screen.height) + "┘");
 };
 
-const addNewBar = () => {
-  const length = 2;
-  return { x: 1 - length, y: 0, length, icon: "🟩", isHalted: false };
+const createNewBar = () => {
+  const length = 5;
+  return { x: 0, y: -length, length, icon: "🟩", isHalted: false };
 };
 
 const isBetween = (value, start, end) => {
@@ -20,7 +25,7 @@ const fillScreenPixel = (screen, x, y, icon) => {
 const clearScreen = (screen) => {
   for (let row = 0; row < screen.height; row++) {
     for (let col = 0; col < screen.width; col++) {
-      screen.pixels[row][col] = ". ";
+      screen.pixels[row][col] = "  ";
     }
   }
 };
@@ -37,7 +42,7 @@ const updateScreen = (screen, bars) => {
 const createScreen = (height, linesCount) => ({
   pixels: Array.from(
     { length: height },
-    () => Array.from({ length: linesCount }, () => " ."),
+    () => Array.from({ length: linesCount }, () => "  "),
   ),
   height,
   width: linesCount,
@@ -81,36 +86,37 @@ const isScreenFilledByBar = (bars, screen) => {
   if (bars.length === 0) {
     return false;
   }
+
   const totalPossibleBarsInCol = Math.ceil(screen.height / bars[0].length);
-
   const totalPossibleBars = totalPossibleBarsInCol * screen.width;
-
   return totalPossibleBars + 1 === bars.length;
 };
 
-export const fallingBar = (height = 10, linesCount = 5, duration = 10) => {
+export const fallingBar = (height = 10, linesCount = 5, duration = 60) => {
   const speed = 40;
-  const times = duration / speed;
+  const frameChangeTimes = Math.floor(duration * 1000 / speed);
   const displayScreen = createScreen(height, linesCount);
+
   setTimeout(() => {
     let roundCount = 0;
-    const bars = [addNewBar()];
+    const bars = [createNewBar()];
     const runningAnimation = setInterval(() => {
-
-      console.clear();
-
       if (bars.every((each) => each.isHalted)) {
-        bars.push(addNewBar());
+        bars.push(createNewBar());
       }
-      updateScreen(displayScreen, bars);
-      showScreen(displayScreen.pixels);
+
+      showScreen(displayScreen);
+
       if (isScreenFilledByBar(bars, displayScreen)) {
         bars.length = 0;
       }
-      updateBars(bars, displayScreen);
-      if (roundCount++ === times) {
+
+      if (roundCount++ === frameChangeTimes) {
         clearInterval(runningAnimation);
       }
+
+      updateBars(bars, displayScreen);
+      updateScreen(displayScreen, bars);
     }, speed);
   }, 0);
 };

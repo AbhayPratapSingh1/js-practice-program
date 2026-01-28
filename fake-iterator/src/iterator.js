@@ -14,7 +14,7 @@ const createIterator = (from = 10, to = -1, st = -1, predicate) => {
         ? { done: false, value: lastValue += st }
         :  { done: true };
     },
-
+x
     [SYMBOL(_SYMBOL.iterator)]: function () {
       return this;
     },

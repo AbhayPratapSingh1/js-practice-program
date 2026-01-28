@@ -36,8 +36,8 @@ const addTailToScreen = (screen, snake) => {
 
 const updateScreen = (screen, snake, fruit) => {
   clearScreen(screen);
-  fillScreenPixel(screen, snake.x, snake.y, snake.icon);
   fillScreenPixel(screen, fruit.x, fruit.y, fruit.icon);
+  fillScreenPixel(screen, snake.x, snake.y, snake.icon);
   addTailToScreen(screen, snake);
 };
 
@@ -144,21 +144,14 @@ export const snakeAnimation = (
   snakeObj,
   height = 20,
   width = 20,
-  duration = 50,
 ) => {
   const screen = createScreen(height, width);
   const speed = 200;
-  const frameChangeTimes = (duration * 1000) / speed;
 
   setTimeout(() => {
-    let roundCount = 0;
     let fruit = generateFruit(screen, snakeObj, "F");
 
-    const runningAnimation = setInterval(() => {
-      if (roundCount++ === frameChangeTimes) {
-        clearInterval(runningAnimation);
-      }
-
+    setInterval(() => {
       if (isSamPos(fruit, snakeObj)) {
         snakeObj.length += 1;
         fruit = generateFruit(screen, snakeObj, "F");

@@ -141,10 +141,15 @@ export const AMT = (code) => {
   );
 
   const totalBrokenData = splitOperatorInList(splitOnSpace, nonStringComment);
+  // console.log(totalBrokenData);
+
+  // const spacedParsed = parseTheBraces(totalBrokenData);
+
   const joined = join(totalBrokenData.filter((each) => each !== "\n"));
 
   return joined;
   // const makedLines = makeLines(totalBrokenData);
+  // return makeLines.join("\n");
   // return makedLines.filter((each) => each !== "\n").flatMap((each) => each)
   //   .join(" ");
   // return totalBrokenData.filter((each) => each !== "\n").join(" ");

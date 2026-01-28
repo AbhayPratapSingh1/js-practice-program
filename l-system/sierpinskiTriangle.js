@@ -1,6 +1,6 @@
 import { Turtle } from "./src/canvas.js";
 import { createScreen, displayScreen } from "./src/drawScreen.js";
-const LENGTH = 4;
+const LENGTH = 5;
 
 const conversionFormula = {
   "F": "F-G+F+G-F",
@@ -39,4 +39,3 @@ const screen = createScreen({ height: 250, width: 250 });
 const turtle = new Turtle(screen.width, screen.height, screen, 180);
 main(turtle);
 displayScreen(screen);
-//

@@ -1,0 +1,11 @@
+1. basic grid
+2. wall
+3. character
+4. gate
+5. breaking wall
+6. bomb
+7. bomb blast
+8. burning show
+
+9. character burning
+10. 

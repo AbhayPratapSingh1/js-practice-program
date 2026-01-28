@@ -1,0 +1,263 @@
+function isNotArray(value) {
+  return !Array.isArray(value);
+}
+
+const isOdd = function (value) {
+  return value % 2 !== 0;
+}
+
+const halfValue = function (value) {
+  return value / 2;
+}
+
+const isLenMoreThan = function (val, threshHold = 5) {
+  return val.length > threshHold ? val : "";
+}
+
+const toUpperCaseConvert = function (value) {
+  return value.toUpperCase();
+}
+
+const maxLenAmongInElements = function (data) {
+  let maxLen = 0;
+  for (let index = 0; index < data.length; index++) {
+    if (data[index].length > maxLen) {
+      maxLen = data[index].length
+    }
+  }
+  return maxLen;
+}
+
+const maxLen = function (val1, val2) {
+  return val1.length < val2.length ? val2 : val1;
+}
+
+const isBiggerInLen = function (value1, value2) {
+  return value1.length > value2.length;
+}
+
+const joinValues = function (value1, value2) {
+  return value1 + value2;
+}
+
+const product = function (val1, val2) {
+  return val1 * val2;
+}
+
+const filter = function (data, condition) {
+  const filteredData = [];
+  for (let index = 0; index < data.length; index++) {
+    const value = data[index];
+    if (condition(value)) {
+      filteredData.push(value);
+    }
+  }
+  return filteredData;
+}
+
+const modifyData = function (data, modifierFunc) {
+  const modifiedData = [];
+  for (let index = 0; index < data.length; index++) {
+    const value = data[index];
+    modifiedData.push(modifierFunc(value));
+  }
+  return modifiedData;
+}
+
+const recursiveData = function (data, operation) {
+  let proccedValue = data[0];
+  for (let index = 1; index < data.length; index++) {
+    const value = data[index];
+    proccedValue = operation(proccedValue, value);
+  }
+  return proccedValue;
+}
+
+const productOfelements = function (data) {
+  return recursiveData(data, product);
+}
+
+const joinElements = function (data) {
+  return recursiveData(data, joinValues);
+}
+
+const maxLenString = function (data) {
+  return recursiveData(data, maxLen);
+}
+
+const oddNumber = function (data) {
+  return filter(data, isOdd);
+}
+
+const stringToUpperCases = function (data) {
+  return modifyData(data, toUpperCaseConvert)
+}
+
+const stringMoreThan5 = function (data) {
+  return filter(data, isLenMoreThan);
+}
+
+const halfValuesOfData = function (data) {
+  return modifyData(data, halfValue);
+}
+
+const squareRoot = function (data) {
+  return modifyData(data, Math.sqrt);
+}
+
+
+const isDeepEqual = function (value1, value2) {
+  if (Array.isArray(value1) && Array.isArray(value2)) {
+    if (value1.length !== value2.length) {
+      return false;
+    }
+    for (let index = 0; index < value1.length; index++) {
+      if (!isDeepEqual(value1[index], value2[index])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return value1 === value2;
+}
+
+const printableArray = function (array) {
+  const printableBuffer = []
+  for (let index = 0; index < array.length; index++) {
+    const printablElement = genPrintableInput(array[index]);
+    printableBuffer.push(printablElement);
+  }
+
+  return "[" + printableBuffer.join(", ") + "]";
+}
+
+const genPrintableInput = function (value) {
+  if (Array.isArray(value)) {
+    return printableArray(value);
+  }
+  if (typeof value === "string") {
+    return `'${value}'`;
+  }
+  return value + "";
+}
+
+const testCase = function (description, functionType, input, expected) {
+  const actual = functionType(input);
+  const isEqual = isDeepEqual(actual, expected);
+  const icon = isEqual ? "✅" : "❌";
+  let message = `\t${icon} ${description}\n`;
+  if (!isEqual) {
+    const prinatableInput = genPrintableInput(input);
+    message += `\t   | Input    : ${prinatableInput}\n\t   `
+      + `| Actual   : ${actual}\n\t   `
+      + `| Expected : ${expected}\n`;
+  }
+  console.log(message);
+}
+
+const underLine = function (text, pad = 0) {
+  const textLine = `${"\t".repeat(pad)}${text}`;
+  return textLine + `\n${"\t".repeat(pad)}${"_".repeat(text.length)}`;
+}
+
+
+
+
+const testProductOfElements = function () {
+  console.log(underLine("Product Elements of Array", 1))
+  console.log()
+  testCase("Empty Array", productOfelements, [0], 0);
+  testCase("multiple differeent elements", productOfelements, [1, 12, 10], 120);
+  testCase("Multiple Elemets", productOfelements, [10, 12, 13, 1000, 0.1], 156000);
+  testCase("Multiple Elemets", productOfelements, [10, 10, 10, 1000, 0.1], 100000);
+  console.log()
+}
+
+const testJointElements = function () {
+  console.log(underLine("Join Elements of Array", 1))
+  console.log()
+  testCase("Empty Array", joinElements, [""], "");
+  testCase("multiple differeent len Element", joinElements, ["a", "12", "1234"], "a121234");
+  testCase("Multiple Elemets", joinElements, ["1", "12", "123", "1234", "1235"], "11212312341235");
+  console.log()
+}
+
+const testMaxLenElement = function () {
+  console.log(underLine("MAX len Elements", 1))
+  console.log()
+  testCase("Empty Array", maxLenString, [""], "");
+  testCase("multiple differeent len Element", maxLenString, ["a", "12", "1234"], "1234");
+  testCase("Multiple Elemets", maxLenString, ["1", "12", "123", "1234", "1235"], "1234");
+  console.log()
+}
+
+const testHalfDataValue = function () {
+  console.log(underLine("HALF_DATA_VALUE", 1))
+  console.log()
+  testCase("Empty Array", halfValuesOfData, [], []);
+  testCase("Single Element", halfValuesOfData, [1], [0.5]);
+  testCase("Multiple Elemets", halfValuesOfData, [1, 2, 4, 6, 10], [0.5, 1, 2, 3, 5]);
+  console.log()
+}
+
+const testStringToUpperCase = function () {
+  console.log(underLine("STRING Lenthg More Than", 1))
+  console.log()
+  testCase("Empty Array", stringToUpperCases, [], []);
+  testCase("Single Element", stringToUpperCases, ["imp", "possible", "no"], ["IMP", "POSSIBLE", "NO"]);
+  console.log()
+}
+
+const testStringLenMoreThan = function () {
+  console.log(underLine("STRING Lenthg More Than", 1))
+  console.log()
+  testCase("Empty Array", stringMoreThan5, [], []);
+  testCase("Single Element", stringMoreThan5, ["imp", "possible", "no"], ["possible"]);
+  testCase("two Element", stringMoreThan5, ["impossible", "possible", "no"], ["impossible", "possible"]);
+  testCase("5 len Element include", stringMoreThan5, ["impossible", "possible", "noasd"], ["impossible", "possible",]);
+  testCase("all Element", stringMoreThan5, ["impossible", "possible", "nasoasd"], ["impossible", "possible", "nasoasd"]);
+  console.log()
+}
+
+const testOddNumber = function () {
+  console.log(underLine("ODD_VALUE_MAPPING", 1))
+  console.log()
+  testCase("Empty Array", oddNumber, [], []);
+  testCase("Single Element", oddNumber, [1], [1]);
+  testCase("Multiple Elemets", oddNumber, [1, 4, 9, 16], [1, 9]);
+
+  console.log()
+}
+
+const testSquareRoot = function () {
+  console.log(underLine("SQUARE_ROOT", 1))
+  console.log()
+  testCase("Empty Array", squareRoot, [], []);
+  testCase("Single Element", squareRoot, [1], [1]);
+  testCase("Multiple Elemets", squareRoot, [1, 4, 9, 16], [1, 2, 3, 4]);
+  console.log()
+}
+
+const testInvalidInput = function () {
+  const invalidType = "Not Array Input";
+  console.log(underLine(invalidType, 1))
+  console.log()
+  testCase("Invalid Type", squareRoot, "[]", ["Not an Array"]);
+
+  console.log()
+
+}
+
+const testAll = function () {
+  testInvalidInput();
+  testSquareRoot();
+  testOddNumber();
+  testHalfDataValue();
+  testStringLenMoreThan();
+  testStringToUpperCase();
+  testMaxLenElement();
+  testJointElements();
+  testProductOfElements();
+}
+
+testAll();
